@@ -40,49 +40,80 @@ entity sirv_gnrl_dfflrs is
     );
 end sirv_gnrl_dfflrs;
 
-architecture impl_r_async of sirv_gnrl_dfflrs is       -- Reset Asynchronous
+architecture impl_better of sirv_gnrl_dfflrs is         -- Reset Asynchronous
   signal qout_r : std_logic_vector( DW-1 downto 0 );
+  signal d_load : std_logic_vector( DW-1 downto 0 );
 begin
-  process(clk, rst_n) begin  -- Reset ASynchronous
+  d_load<= dnxt when lden = '1' else
+           qout_r;
+  
+  Dff: process(clk, rst_n) begin                        -- Reset ASynchronous
     if rst_n = '0' then
       qout_r<= (others=> '1');
-    elsif rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
+    elsif rising_edge(clk) then     
+      qout_r<= d_load;                                 
     end if;
   end process;
+  
   qout<= qout_r;
-end impl_r_async;
-
-architecture impl_r_sync of sirv_gnrl_dfflrs is        -- Reset Synchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin  -- Reset Synchronous
-    if rst_n = '0' then
-      qout_r<= (others=> '1');
-    elsif rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
-    end if;
-  end process;
-  qout<= qout_r;
-end impl_r_sync;
-
-architecture impl_better of sirv_gnrl_dfflrs is        -- Reset Asynchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin 
-    if rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
-    end if;
-  end process;
-  qout<= (others=> '1') when rst_n = '0' else 
-         qout_r;
 end impl_better;
+
+-- architecture impl_r_sync1 of sirv_gnrl_dfflrs is        -- Reset Synchronous
+--   signal din_r  : std_logic_vector( DW-1 downto 0 );
+--   signal dload  : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   
+-- begin
+--   dload<= dnxt when lden = '1' else
+--           qout_r;
+--   din_r<= (others=> '1') when rst_n = '0' else
+--           dload;
+--   
+--   Dff: process (clk) begin                              -- Reset Synchronous
+--     if rising_edge(clk) then   
+--       qout_r<= din_r;
+--     end if;
+--   end process;
+-- 
+--   qout<= qout_r;
+-- end impl_r_sync1;
+-- 
+-- architecture impl_r_sync2 of sirv_gnrl_dfflrs is        -- Reset Synchronous
+--   signal din_r  : std_logic_vector( DW-1 downto 0 );
+--   signal dload  : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   
+-- begin
+--   din_r<= (others=> '1') when rst_n = '0' else
+--           dnxt;
+--   dload<= din_r when lden = '1' else
+--           qout_r;
+--   
+--   Dff: process (clk) begin                              -- Reset Synchronous
+--     if rising_edge(clk) then   
+--       qout_r<= dload;
+--     end if;
+--   end process;
+-- 
+--   qout<= qout_r;
+-- end impl_r_sync2;
+-- 
+-- architecture impl_wrong of sirv_gnrl_dfflrs is          -- Reset Asynchronous
+--   signal d_load : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+-- begin
+--   d_load<= dnxt when lden = '1' else
+--           qout_r;
+-- 
+--   Dff: process(clk) begin 
+--     if rising_edge(clk) then 
+--       qout_r<= d_load;
+--     end if;
+--   end process;
+-- 
+--   qout<= (others=> '1') when rst_n = '0' else            -- can't reset qout_r, also can't reset the circuit.
+--          qout_r;
+-- end impl_wrong;
 
 -- ===========================================================================
 --
@@ -105,49 +136,36 @@ entity sirv_gnrl_dfflr is
     );
 end sirv_gnrl_dfflr;
 
-architecture impl_r_async of sirv_gnrl_dfflr is        -- Reset Asynchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk, rst_n) begin  -- Reset ASynchronous
-    if rst_n = '0' then
-      qout_r<= (others=> '0');
-    elsif rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
-    end if;
-  end process;
-  qout<= qout_r;
-end impl_r_async;
-
-architecture impl_r_sync of sirv_gnrl_dfflr is         -- Reset Synchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin  -- Reset Synchronous
-    if rst_n = '0' then
-      qout_r<= (others=> '0');
-    elsif rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
-    end if;
-  end process;
-  qout<= qout_r;
-end impl_r_sync;
-
 architecture impl_better of sirv_gnrl_dfflr is         -- Reset Asynchronous
+  signal d_load : std_logic_vector( DW-1 downto 0 );
   signal qout_r : std_logic_vector( DW-1 downto 0 );
 begin
-  process(clk) begin 
-    if rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
+  d_load<= dnxt when lden = '1' else
+           qout_r;
+  process(clk, rst_n) begin                            -- Reset ASynchronous
+    if rst_n = '0' then
+      qout_r<= (others=> '0');
+    elsif rising_edge(clk) then                                    
+      qout_r<= d_load;
     end if;
   end process;
-  qout<= (others=> '0') when rst_n = '0' else 
-         qout_r;
+  qout<= qout_r;
 end impl_better;
+
+-- architecture impl_wrong of sirv_gnrl_dfflr is          -- Reset Asynchronous
+--   signal d_load : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+-- begin
+--   d_load<= dnxt when lden = '1' else
+--           qout_r;
+--   process(clk) begin 
+--     if rising_edge(clk) then
+--       qout_r<= d_load;
+--     end if;
+--   end process;
+--   qout<= (others=> '0') when rst_n = '0' else 
+--          qout_r;
+-- end impl_wrong;
 
 -- ===========================================================================
 --
@@ -169,13 +187,14 @@ entity sirv_gnrl_dffl is
 end sirv_gnrl_dffl;
 
 architecture impl of sirv_gnrl_dffl is
+  signal d_load : std_logic_vector( DW-1 downto 0 );
   signal qout_r : std_logic_vector( DW-1 downto 0 );
 begin
+  d_load<= dnxt when lden = '1' else
+          qout_r;
   process(clk) begin
-    if rising_edge(clk) then
-      if lden = '1' then
-        qout_r<= dnxt;
-      end if;
+    if rising_edge(clk) then    
+      qout_r<= d_load;     
     end if;
   end process;
   qout<= qout_r;
@@ -201,43 +220,43 @@ entity sirv_gnrl_dffrs is
     );
 end sirv_gnrl_dffrs;
 
-architecture impl_r_async of sirv_gnrl_dffrs is
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
+architecture impl_better of sirv_gnrl_dffrs is
+  
 begin
-  process(clk, rst_n) begin  -- Reset ASynchronous
+  process(clk, rst_n) begin                             -- Reset ASynchronous
     if rst_n = '0' then
-      qout_r<= (others=> '1');
+      qout<= (others=> '1');
     elsif rising_edge(clk) then
-      qout_r<= dnxt;
+      qout<= dnxt;
     end if;
   end process;
-  qout<= qout_r;
-end impl_r_async;
-
-architecture impl_r_sync of sirv_gnrl_dffrs is
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin         -- Reset Synchronous
-    if rst_n = '0' then
-      qout_r<= (others=> '1');
-    elsif rising_edge(clk) then 
-      qout_r<= dnxt;
-    end if;
-  end process;
-  qout<= qout_r;
-end impl_r_sync;
-
-architecture impl_better of sirv_gnrl_dffrs is        -- Reset Asynchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin 
-    if rising_edge(clk) then    
-        qout_r<= dnxt; 
-    end if;
-  end process;
-  qout<= (others=> '1') when rst_n = '0' else 
-         qout_r;
+  
 end impl_better;
+
+-- architecture impl_r_sync of sirv_gnrl_dffrs is
+--   
+-- begin
+--   process(clk) begin                                    -- Reset Synchronous
+--     if rst_n = '0' then
+--       qout<= (others=> '1');
+--     elsif rising_edge(clk) then 
+--       qout<= dnxt;
+--     end if;
+--   end process;
+--   
+-- end impl_r_sync;
+-- 
+-- architecture impl_wrong of sirv_gnrl_dffrs is           -- Reset Asynchronous
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+-- begin
+--   process(clk) begin 
+--     if rising_edge(clk) then    
+--         qout_r<= dnxt; 
+--     end if;
+--   end process;
+--   qout<= (others=> '1') when rst_n = '0' else 
+--          qout_r;
+-- end impl_wrong;
 
 -- ===========================================================================
 --
@@ -259,43 +278,43 @@ entity sirv_gnrl_dffr is
     );
 end sirv_gnrl_dffr;
 
-architecture impl_r_async of sirv_gnrl_dffr is
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
+architecture impl_better of sirv_gnrl_dffr is
+  
 begin
-  process(clk, rst_n) begin  -- Reset ASynchronous
+  process(clk, rst_n) begin                             -- Reset ASynchronous
     if rst_n = '0' then
-      qout_r<= (others=> '0');
+      qout<= (others=> '0');
     elsif rising_edge(clk) then
-      qout_r<= dnxt;
+      qout<= dnxt;
     end if;
   end process;
-  qout<= qout_r;
-end impl_r_async;
-
-architecture impl_r_sync of sirv_gnrl_dffr is
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin         -- Reset Synchronous
-    if rst_n = '0' then
-      qout_r<= (others=> '0');
-    elsif rising_edge(clk) then 
-      qout_r<= dnxt;
-    end if;
-  end process;
-  qout<= qout_r;
-end impl_r_sync;
-
-architecture impl_better of sirv_gnrl_dffr is        -- Reset Asynchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-begin
-  process(clk) begin 
-    if rising_edge(clk) then    
-        qout_r<= dnxt;   
-    end if;
-  end process;
-  qout<= (others=> '0') when rst_n = '0' else 
-         qout_r;
+  
 end impl_better;
+
+-- architecture impl_r_sync of sirv_gnrl_dffr is
+--   
+-- begin
+--   process(clk) begin                                    -- Reset Synchronous
+--     if rst_n = '0' then
+--       qout<= (others=> '0');
+--     elsif rising_edge(clk) then 
+--       qout<= dnxt;
+--     end if;
+--   end process;
+--   
+-- end impl_r_sync;
+-- 
+-- architecture impl_wrong of sirv_gnrl_dffr is            -- Reset Asynchronous
+--   signal qout_r : std_logic_vector( DW-1 downto 0 );
+-- begin
+--   process(clk) begin 
+--     if rising_edge(clk) then    
+--         qout_r<= dnxt;   
+--     end if;
+--   end process;
+--   qout<= (others=> '0') when rst_n = '0' else 
+--          qout_r;
+-- end impl_wrong;
 
 -- ===========================================================================
 --
