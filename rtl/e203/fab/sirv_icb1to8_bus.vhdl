@@ -38,28 +38,28 @@ entity sirv_icb1to8_bus is
            SPLT_FIFO_OUTS_NUM:  integer := 1;
            SPLT_FIFO_CUT_READY: integer := 1;
            
-           O0_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O0_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O0_BASE_REGION_LSB:  integer := 12;
 
-           O1_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O1_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O1_BASE_REGION_LSB:  integer := 12;
 
-           O2_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O2_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O2_BASE_REGION_LSB:  integer := 12;
 
-           O3_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O3_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O3_BASE_REGION_LSB:  integer := 12;
 
-           O4_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O4_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O4_BASE_REGION_LSB:  integer := 12;
 
-           O5_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O5_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O5_BASE_REGION_LSB:  integer := 12;
 
-           O6_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O6_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O6_BASE_REGION_LSB:  integer := 12;
 
-           O7_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O7_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O7_BASE_REGION_LSB:  integer := 12
   );
   port ( o0_icb_enable:        in  std_logic;
@@ -677,42 +677,42 @@ begin
   ) <= splt_bus_icb_rsp_ready;
 
   buf_cmd_addr_c0<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) =
-                              to_integer(O0_BASE_ADDR(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O0_BASE_ADDR(BASE_REGION_MSB downto O0_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o0<= buf_icb_cmd_valid and buf_cmd_addr_c0 and o0_icb_enable;
 
   buf_cmd_addr_c1<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O1_BASE_REGION_LSB))) =
-                              to_integer(O1_BASE_ADDR(BASE_REGION_MSB downto O1_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O1_BASE_ADDR(BASE_REGION_MSB downto O1_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o1<= buf_icb_cmd_valid and buf_cmd_addr_c1 and o1_icb_enable;
 
   buf_cmd_addr_c2<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O2_BASE_REGION_LSB))) =
-                              to_integer(O2_BASE_ADDR(BASE_REGION_MSB downto O2_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O2_BASE_ADDR(BASE_REGION_MSB downto O2_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o2<= buf_icb_cmd_valid and buf_cmd_addr_c2 and o2_icb_enable;
 
   buf_cmd_addr_c3<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O3_BASE_REGION_LSB))) =
-                              to_integer(O3_BASE_ADDR(BASE_REGION_MSB downto O3_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O3_BASE_ADDR(BASE_REGION_MSB downto O3_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o3<= buf_icb_cmd_valid and buf_cmd_addr_c3 and o3_icb_enable;
 
   buf_cmd_addr_c4<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O4_BASE_REGION_LSB))) =
-                              to_integer(O4_BASE_ADDR(BASE_REGION_MSB downto O4_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O4_BASE_ADDR(BASE_REGION_MSB downto O4_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o4<= buf_icb_cmd_valid and buf_cmd_addr_c4 and o4_icb_enable;
 
   buf_cmd_addr_c5<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O5_BASE_REGION_LSB))) =
-                              to_integer(O5_BASE_ADDR(BASE_REGION_MSB downto O5_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O5_BASE_ADDR(BASE_REGION_MSB downto O5_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o5<= buf_icb_cmd_valid and buf_cmd_addr_c5 and o5_icb_enable;
 
   buf_cmd_addr_c6<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O6_BASE_REGION_LSB))) =
-                              to_integer(O6_BASE_ADDR(BASE_REGION_MSB downto O6_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O6_BASE_ADDR(BASE_REGION_MSB downto O6_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o6<= buf_icb_cmd_valid and buf_cmd_addr_c6 and o6_icb_enable;
 
   buf_cmd_addr_c7<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O7_BASE_REGION_LSB))) =
-                              to_integer(O7_BASE_ADDR(BASE_REGION_MSB downto O7_BASE_REGION_LSB))) else
+                              to_integer(unsigned(O7_BASE_ADDR(BASE_REGION_MSB downto O7_BASE_REGION_LSB)))) else
                     '0';
   icb_cmd_o7<= buf_icb_cmd_valid and buf_cmd_addr_c7 and o7_icb_enable;
   

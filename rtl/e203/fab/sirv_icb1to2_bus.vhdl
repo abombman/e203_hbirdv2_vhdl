@@ -38,7 +38,7 @@ entity sirv_icb1to2_bus is
            SPLT_FIFO_OUTS_NUM:  integer := 1;
            SPLT_FIFO_CUT_READY: integer := 1;
            
-           O0_BASE_ADDR:        unsigned(AW-1 downto 0):= X"0000_1000"; 
+           O0_BASE_ADDR:        std_logic_vector(AW-1 downto 0):= X"0000_1000"; 
            O0_BASE_REGION_LSB:  integer := 12         
   );
   port ( i_icb_cmd_valid:      in  std_logic;
@@ -142,7 +142,7 @@ architecture impl of sirv_icb1to2_bus is
 
   signal icb_cmd_o0:          std_logic;
   signal icb_cmd_o1:          std_logic;
-  signal icb_cmd_addr_compare:std_logic;
+  --signal icb_cmd_addr_compare:std_logic;
 
   signal buf_icb_splt_indic:  std_logic_vector(SPLT_I_NUM-1 downto 0);
 
@@ -343,10 +343,10 @@ begin
 
   (o0_icb_rsp_ready, o1_icb_rsp_ready) <= splt_bus_icb_rsp_ready;
 
-  icb_cmd_addr_compare<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) =
-  	                               to_integer(O0_BASE_ADDR(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) else
-  	                     '0';
-  icb_cmd_o0<= buf_icb_cmd_valid and icb_cmd_addr_compare;
+  --icb_cmd_addr_compare<= '1' when (to_integer(unsigned(buf_icb_cmd_addr(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) =
+  --	                               to_integer(O0_BASE_ADDR(BASE_REGION_MSB downto O0_BASE_REGION_LSB))) else
+  --	                     '0';
+  icb_cmd_o0<= buf_icb_cmd_valid and ( buf_icb_cmd_addr(BASE_REGION_MSB downto O0_BASE_REGION_LSB) ?= O0_BASE_ADDR(BASE_REGION_MSB downto O0_BASE_REGION_LSB) );
   icb_cmd_o1<= not icb_cmd_o0;
 
   buf_icb_splt_indic<= (icb_cmd_o0, icb_cmd_o1);
