@@ -1,27 +1,35 @@
- /*                                                                      
- Copyright 2018-2020 Nuclei System Technology, Inc.                
+------------------------------------------------------------------------------
+-- Copyright 2018-2020 Nuclei System Technology, Inc.                
+--                                                                         
+--   Licensed under the Apache License, Version 2.0 (the "License");         
+-- you may not use this file except in compliance with the License.        
+-- You may obtain a copy of the License at                                 
+--                                                                         
+--     http://www.apache.org/licenses/LICENSE-2.0                          
+--                                                                         
+--   Unless required by applicable law or agreed to in writing, software    
+-- distributed under the License is distributed on an "AS IS" BASIS,       
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and     
+-- limitations under the License.                                          
+------------------------------------------------------------------------------
+-- Description:
+--  
+--  Ensure your synthesis tool/compiler is configured for VHDL-2019
+------------------------------------------------------------------------------                                                            
                                                                          
- Licensed under the Apache License, Version 2.0 (the "License");         
- you may not use this file except in compliance with the License.        
- You may obtain a copy of the License at                                 
-                                                                         
-     http://www.apache.org/licenses/LICENSE-2.0                          
-                                                                         
-  Unless required by applicable law or agreed to in writing, software    
- distributed under the License is distributed on an "AS IS" BASIS,       
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and     
- limitations under the License.                                          
- */                                                                      
-                                                                         
-                                                                         
+-- ====================================================================
+-- 
+-- Description:
+--  The mini-decode module to decode the instruction in IFU 
+-- 
+-- ====================================================================                                                                        
                                                                          
 library ieee;
 use ieee.std_logic_1164.all;
-
-library xil_defaultlib;
-use xil_defaultlib.all;
-
+use ieee.numeric_std.all;
+use work.config_pkg.all;
+use work.e203_defines_pkg.all;
 
 entity e203_ifu_minidec is 
   port(
@@ -29,7 +37,7 @@ entity e203_ifu_minidec is
       --------------------------------------------------------------
       -- The IR stage to Decoder
       --------------------------------------------------------------
-      instr:      in  std_logic_vector(E203_INSTR_SIZE-1 downto 0);
+      instr:            in std_logic_vector(E203_INSTR_SIZE-1 downto 0);
   
       --------------------------------------------------------------
       -- The Decoded Info-Bus
@@ -51,7 +59,7 @@ entity e203_ifu_minidec is
       dec_jal:         out std_logic;
       dec_jalr:        out std_logic;
       dec_bxx:         out std_logic;
-      dec_jalr_rs1idx: out std_logic_vector(E203_RFIDX_WIDTH downto 0); 
+      dec_jalr_rs1idx: out std_logic_vector(E203_RFIDX_WIDTH-1 downto 0); 
       dec_bjp_imm:     out std_logic_vector(E203_XLEN-1 downto 0)
 
   );
@@ -102,60 +110,57 @@ architecture impl of e203_ifu_minidec is
         dec_jalr:            out std_logic;
         dec_bxx:             out std_logic;    
         dec_jalr_rs1idx:     out std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-        dec_bjp_immout:      out std_logic_vector(E203_XLEN-1 downto 0)
+        dec_bjp_imm:         out std_logic_vector(E203_XLEN-1 downto 0)
     );
   end component;
 begin 
-  e203_exu_decode u_e203_exu_decode(
+  u_e203_exu_decode: component e203_exu_decode port map (
+                                                          i_instr            => instr,
+                                                          i_pc               => (E203_PC_SIZE-1 downto 0 => '0'),
+                                                          i_prdt_taken       => '0', 
+                                                          i_muldiv_b2b       => '0', 
+ 
+                                                          i_misalgn          => '0',
+                                                          i_buserr           => '0',
+ 
+                                                          dbg_mode           => '0',
+ 
+                                                          dec_misalgn        => OPEN,
+                                                          dec_buserr         => OPEN,
+                                                          dec_ilegl          => OPEN,
+ 
+                                                          dec_rs1x0          => OPEN,
+                                                          dec_rs2x0          => OPEN,
+                                                          dec_rs1en          => dec_rs1en,
+                                                          dec_rs2en          => dec_rs2en,
+                                                          dec_rdwen          => OPEN,
+                                                          dec_rs1idx         => dec_rs1idx,
+                                                          dec_rs2idx         => dec_rs2idx,
+                                                          dec_rdidx          => OPEN,
+                                                          dec_info           => OPEN,  
+                                                          dec_imm            => OPEN,
+                                                          dec_pc             => OPEN,
+                                                       
+                                                       `if E203_HAS_NICE = "TRUE" then
+                                                          dec_nice           => OPEN,
+                                                          nice_xs_off        => '0',  
+                                                          nice_cmt_off_ilgl_o=> OPEN,
+                                                       `end if
 
-  .i_instr(instr),
-  .i_pc(`E203_PC_SIZE'b0),
-  .i_prdt_taken(1'b0), 
-  .i_muldiv_b2b(1'b0), 
+                                                          dec_mulhsu         => dec_mulhsu,
+                                                          dec_mul            => dec_mul   ,
+                                                          dec_div            => dec_div   ,
+                                                          dec_rem            => dec_rem   ,
+                                                          dec_divu           => dec_divu  ,
+                                                          dec_remu           => dec_remu  ,
+         
+                                                          dec_rv32           => dec_rv32,
+                                                          dec_bjp            => dec_bjp ,
+                                                          dec_jal            => dec_jal ,
+                                                          dec_jalr           => dec_jalr,
+                                                          dec_bxx            => dec_bxx ,
 
-  .i_misalgn (1'b0),
-  .i_buserr  (1'b0),
-
-  .dbg_mode  (1'b0),
-
-  .dec_misalgn(),
-  .dec_buserr(),
-  .dec_ilegl(),
-
-  .dec_rs1x0(),
-  .dec_rs2x0(),
-  .dec_rs1en(dec_rs1en),
-  .dec_rs2en(dec_rs2en),
-  .dec_rdwen(),
-  .dec_rs1idx(dec_rs1idx),
-  .dec_rs2idx(dec_rs2idx),
-  .dec_rdidx(),
-  .dec_info(),  
-  .dec_imm(),
-  .dec_pc(),
-
-`ifdef E203_HAS_NICE//{
-  .dec_nice   (),
-  .nice_xs_off(1'b0),  
-  .nice_cmt_off_ilgl_o(),
-`endif//}
-
-  .dec_mulhsu(dec_mulhsu),
-  .dec_mul   (dec_mul   ),
-  .dec_div   (dec_div   ),
-  .dec_rem   (dec_rem   ),
-  .dec_divu  (dec_divu  ),
-  .dec_remu  (dec_remu  ),
-
-  .dec_rv32(dec_rv32),
-  .dec_bjp (dec_bjp ),
-  .dec_jal (dec_jal ),
-  .dec_jalr(dec_jalr),
-  .dec_bxx (dec_bxx ),
-
-  .dec_jalr_rs1idx(dec_jalr_rs1idx),
-  .dec_bjp_imm    (dec_bjp_imm    )  
-  );
-
-
-end 
+                                                          dec_jalr_rs1idx    => dec_jalr_rs1idx,
+                                                          dec_bjp_imm        => dec_bjp_imm      
+                                                         );
+end impl;
