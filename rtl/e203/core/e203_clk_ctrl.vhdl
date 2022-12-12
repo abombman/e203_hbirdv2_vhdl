@@ -74,22 +74,22 @@ entity e203_clk_ctrl is
 end e203_clk_ctrl;
 
 architecture impl of e203_clk_ctrl is 
-  signal ifu_clk_en: std_logic;
-  signal exu_clk_en: std_logic;
-  signal lsu_clk_en: std_logic;
-  signal biu_clk_en: std_logic;
+  signal ifu_clk_en: std_ulogic;
+  signal exu_clk_en: std_ulogic;
+  signal lsu_clk_en: std_ulogic;
+  signal biu_clk_en: std_ulogic;
 
-  `if E203_HAS_ITCM = "TRUE" then 
-    signal itcm_active_r: std_logic;
-    signal itcm_clk_en:   std_logic;
-  `end if
+ `if E203_HAS_ITCM = "TRUE" then 
+  signal itcm_active_r: std_ulogic;
+  signal itcm_clk_en:   std_ulogic;
+ `end if
 
-  `if E203_HAS_DTCM = "TRUE" then 
-    signal dtcm_active_r: std_logic;
-    signal dtcm_clk_en:   std_logic; 
-  `end if
+ `if E203_HAS_DTCM = "TRUE" then 
+  signal dtcm_active_r: std_ulogic;
+  signal dtcm_clk_en:   std_ulogic; 
+ `end if
   
-  `if E203_HAS_ITCM = "TRUE" or E203_HAS_DTCM = "TRUE" then
+ `if E203_HAS_ITCM = "TRUE" or E203_HAS_DTCM = "TRUE" then
   component sirv_gnrl_dffr is
     generic( DW: integer := 32 );
     port( 
@@ -99,7 +99,7 @@ architecture impl of e203_clk_ctrl is
           rst_n: in std_logic
     );
   end component;
-  `end if 
+ `end if 
 
   component e203_clkgate is 
     port(

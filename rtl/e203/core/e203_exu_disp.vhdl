@@ -111,40 +111,40 @@ entity e203_exu_disp is
 end e203_exu_disp;
 
 architecture impl of e203_exu_disp is 
-  signal disp_i_info_grp: std_logic_vector(E203_DECINFO_GRP_WIDTH-1 downto 0);
-  signal disp_csr:        std_logic;
-  signal disp_alu_longp_prdt: std_logic;
-  signal disp_alu_longp_real: std_logic;
-  signal disp_fence_fencei:   std_logic;
-  signal disp_i_valid_pos:    std_logic;
-  signal disp_i_ready_pos:    std_logic;
+  signal disp_i_info_grp: std_ulogic_vector(E203_DECINFO_GRP_WIDTH-1 downto 0);
+  signal disp_csr:        std_ulogic;
+  signal disp_alu_longp_prdt: std_ulogic;
+  signal disp_alu_longp_real: std_ulogic;
+  signal disp_fence_fencei:   std_ulogic;
+  signal disp_i_valid_pos:    std_ulogic;
+  signal disp_i_ready_pos:    std_ulogic;
   
-  signal raw_dep:             std_logic;
-  signal waw_dep:             std_logic;
-  signal dep:                 std_logic;
-  signal disp_condition:      std_logic;
+  signal raw_dep:             std_ulogic;
+  signal waw_dep:             std_ulogic;
+  signal dep:                 std_ulogic;
+  signal disp_condition:      std_ulogic;
 
-  signal disp_by_csr:         std_logic;
-  signal disp_by_fence:       std_logic;
-  signal disp_by_longp:       std_logic;
+  signal disp_by_csr:         std_ulogic;
+  signal disp_by_fence:       std_ulogic;
+  signal disp_by_longp:       std_ulogic;
 
-  signal disp_i_rs1_msked:    std_logic_vector(E203_XLEN-1 downto 0);
-  signal disp_i_rs2_msked:    std_logic_vector(E203_XLEN-1 downto 0);
+  signal disp_i_rs1_msked:    std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal disp_i_rs2_msked:    std_ulogic_vector(E203_XLEN-1 downto 0);
   
  `if E203_HAS_FPU = "FALSE" then
-  constant disp_i_fpu:        std_logic:= '0';
-  constant disp_i_fpu_rs1en:  std_logic:= '0';
-  constant disp_i_fpu_rs2en:  std_logic:= '0';
-  constant disp_i_fpu_rs3en:  std_logic:= '0';
-  constant disp_i_fpu_rdwen:  std_logic:= '0';
-  constant disp_i_fpu_rs1idx: std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
-  constant disp_i_fpu_rs2idx: std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
-  constant disp_i_fpu_rs3idx: std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
-  constant disp_i_fpu_rdidx:  std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
-  constant disp_i_fpu_rs1fpu: std_logic:= '0';
-  constant disp_i_fpu_rs2fpu: std_logic:= '0';
-  constant disp_i_fpu_rs3fpu: std_logic:= '0';
-  constant disp_i_fpu_rdfpu:  std_logic:= '0';
+  constant disp_i_fpu:        std_ulogic:= '0';
+  constant disp_i_fpu_rs1en:  std_ulogic:= '0';
+  constant disp_i_fpu_rs2en:  std_ulogic:= '0';
+  constant disp_i_fpu_rs3en:  std_ulogic:= '0';
+  constant disp_i_fpu_rdwen:  std_ulogic:= '0';
+  constant disp_i_fpu_rs1idx: std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant disp_i_fpu_rs2idx: std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant disp_i_fpu_rs3idx: std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant disp_i_fpu_rdidx:  std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant disp_i_fpu_rs1fpu: std_ulogic:= '0';
+  constant disp_i_fpu_rs2fpu: std_ulogic:= '0';
+  constant disp_i_fpu_rs3fpu: std_ulogic:= '0';
+  constant disp_i_fpu_rdfpu:  std_ulogic:= '0';
  `end if
 begin
   disp_i_info_grp <= disp_i_info (E203_DECINFO_GRP'range);

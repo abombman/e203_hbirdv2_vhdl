@@ -59,6 +59,14 @@ package e203_defines_pkg is
   constant E203_RFREG_NUM: integer:= 16;
 `end if
 
+`if E203_CFG_REGNUM_IS_8 = "TRUE" then
+  constant E203_RFREG_NUM: integer:= 8;
+`end if
+
+`if E203_CFG_REGNUM_IS_4 = "TRUE" then
+  constant E203_RFREG_NUM: integer:= 4;
+`end if
+
   constant E203_PPI_ADDR_BASE: unsigned(E203_CFG_ADDR_SIZE-1 downto 0)                        := E203_CFG_PPI_ADDR_BASE;
   --constant E203_PPI_BASE_REGION: unsigned(E203_CFG_ADDR_SIZE-1 downto E203_CFG_ADDR_SIZE-4)   := E203_CFG_PPI_BASE_REGION;
   subtype  E203_PPI_BASE_REGION is unsigned(E203_CFG_ADDR_SIZE-1 downto E203_CFG_ADDR_SIZE-4);

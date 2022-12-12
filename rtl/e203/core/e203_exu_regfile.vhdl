@@ -50,14 +50,14 @@ entity e203_exu_regfile is
 end e203_exu_regfile;
 
 architecture impl of e203_exu_regfile is 
-  type regfile_type is array(E203_RFREG_NUM-1 downto 0) of std_logic_vector(E203_XLEN-1 downto 0);
+  type regfile_type is array(E203_RFREG_NUM-1 downto 0) of std_ulogic_vector(E203_XLEN-1 downto 0);
   signal rf_r:   regfile_type;
-  signal rf_wen: std_logic_vector(E203_XLEN-1 downto 0);
+  signal rf_wen: std_ulogic_vector(E203_XLEN-1 downto 0);
   
-  -- wbck_dest_is(i) is archi-scope signal. watch out file sirv_gnrl_icbs.vhdl, line 240 and 259.
+  -- wbck_dest_is(i) is archi-scope signal. look out file sirv_gnrl_icbs.vhdl, line 240 and 259.
   -- signal wbck_dest_is: std_logic_vector(E203_RFREG_NUM-1 downto 0);
   component sirv_gnrl_dffl is
-    generic( DW: integer := 32 );
+    generic( DW: integer );
     port( 	  
     	    lden:  in std_logic;
           dnxt:  in std_logic_vector( DW-1 downto 0 );
@@ -67,8 +67,8 @@ architecture impl of e203_exu_regfile is
   end component;
 
  `if E203_REGFILE_LATCH_BASED = "TRUE" then
-  signal wbck_dest_dat_r: std_logic_vector(E203_XLEN-1 downto 0);
-  signal clk_rf_ltch:     std_logic_vector(E203_RFREG_NUM-1 downto 0);
+  signal wbck_dest_dat_r: std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal clk_rf_ltch:     std_ulogic_vector(E203_RFREG_NUM-1 downto 0);
   component sirv_gnrl_dffl is
     generic( DW: integer );
     port( 	  
@@ -114,14 +114,14 @@ begin
     end generate;
 
     rfno0: if i > 0 generate
-      signal wbck_dest_is_i: std_logic; -- every generation for index i instants one wbck_dest_is_i signal.
-                                        -- use local signal is better way.
+      signal wbck_dest_is_i: std_ulogic; -- every generation for index i instants one wbck_dest_is_i signal.
+                                         -- use local signal is better way.
     begin
     -- wbck_dest_is(i) is archi-scope signal.
-    -- watch out file sirv_gnrl_icbs.vhdl line 240 and 259.
+    -- look out file sirv_gnrl_icbs.vhdl line 240 and 259.
     -- wbck_dest_is(i) <= '1' when (to_integer(unsigned(wbck_dest_idx)) = i) else
     -- 	                  '0'; 
-    wbck_dest_is_i <= '1' when (to_integer(unsigned(wbck_dest_idx)) = i) else
+    wbck_dest_is_i <= '1' when (to_integer(u_unsigned(wbck_dest_idx)) = i) else
      	              '0'; 	               
     rf_wen(i) <= wbck_dest_wen and wbck_dest_is_i;
    `if E203_REGFILE_LATCH_BASED = "TRUE" then
@@ -140,7 +140,7 @@ begin
    `end if    
     end generate;
   end generate;
-  read_src1_dat <= rf_r(to_integer(unsigned(read_src1_idx)));
-  read_src2_dat <= rf_r(to_integer(unsigned(read_src2_idx)));
+  read_src1_dat <= rf_r(to_integer(u_unsigned(read_src1_idx)));
+  read_src2_dat <= rf_r(to_integer(u_unsigned(read_src2_idx)));
   x1_r          <= rf_r(1);
 end impl;

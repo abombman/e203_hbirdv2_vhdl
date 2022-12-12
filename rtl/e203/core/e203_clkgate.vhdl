@@ -32,12 +32,14 @@ entity e203_clkgate is
         clk_in:    in std_logic;
         test_mode: in std_logic;
         clock_en:  in std_logic;
-        clk_out: out std_logic 
+        clk_out:  out std_logic 
   );
 end e203_clkgate;
 
 architecture impl of e203_clkgate is 
-  signal enb : std_logic;  
+ `if FPGA_SOURCE = "FALSE" then 
+  signal enb : std_ulogic;
+ `end if  
 begin
 
 `if FPGA_SOURCE = "TRUE" then 

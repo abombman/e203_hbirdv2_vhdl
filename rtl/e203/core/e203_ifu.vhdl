@@ -124,16 +124,16 @@ entity e203_ifu is
 end e203_ifu;
 
 architecture impl of e203_ifu is 
-  signal ifu_req_valid:    std_logic;
-  signal ifu_req_ready:    std_logic;
-  signal ifu_req_pc:       std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal ifu_req_seq:      std_logic;
-  signal ifu_req_seq_rv32: std_logic;
-  signal ifu_req_last_pc:  std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal ifu_rsp_valid:    std_logic;
-  signal ifu_rsp_ready:    std_logic;
-  signal ifu_rsp_err:      std_logic;
-  signal ifu_rsp_instr:    std_logic_vector(E203_INSTR_SIZE-1 downto 0);
+  signal ifu_req_valid:    std_ulogic;
+  signal ifu_req_ready:    std_ulogic;
+  signal ifu_req_pc:       std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_req_seq:      std_ulogic;
+  signal ifu_req_seq_rv32: std_ulogic;
+  signal ifu_req_last_pc:  std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_rsp_valid:    std_ulogic;
+  signal ifu_rsp_ready:    std_ulogic;
+  signal ifu_rsp_err:      std_ulogic;
+  signal ifu_rsp_instr:    std_ulogic_vector(E203_INSTR_SIZE-1 downto 0);
   
   component e203_ifu_ifetch is 
   port ( 

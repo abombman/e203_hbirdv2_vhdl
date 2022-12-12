@@ -111,121 +111,121 @@ entity e203_ifu_ift2icb is
 end e203_ifu_ift2icb;
 
 architecture impl of e203_ifu_ift2icb is 
-  signal i_ifu_rsp_valid:       std_logic;
-  signal i_ifu_rsp_ready:       std_logic;
-  signal i_ifu_rsp_err:         std_logic;
-  signal i_ifu_rsp_instr:       std_logic_vector(E203_INSTR_SIZE-1   downto 0);
-  signal ifu_rsp_bypbuf_i_data: std_logic_vector(E203_INSTR_SIZE+1-1 downto 0);
-  signal ifu_rsp_bypbuf_o_data: std_logic_vector(E203_INSTR_SIZE+1-1 downto 0);
+  signal i_ifu_rsp_valid:       std_ulogic;
+  signal i_ifu_rsp_ready:       std_ulogic;
+  signal i_ifu_rsp_err:         std_ulogic;
+  signal i_ifu_rsp_instr:       std_ulogic_vector(E203_INSTR_SIZE-1   downto 0);
+  signal ifu_rsp_bypbuf_i_data: std_ulogic_vector(E203_INSTR_SIZE+1-1 downto 0);
+  signal ifu_rsp_bypbuf_o_data: std_ulogic_vector(E203_INSTR_SIZE+1-1 downto 0);
 
 `if E203_HAS_ITCM = "TRUE" then
-  signal ifu_req_pc2itcm:       std_logic;
-  signal ifu_icb_cmd2itcm:      std_logic;
-  signal icb_cmd2itcm_r:        std_logic;
-  signal ifu2itcm_icb_rsp_instr:std_logic_vector(31 downto 0);
+  signal ifu_req_pc2itcm:       std_ulogic;
+  signal ifu_icb_cmd2itcm:      std_ulogic;
+  signal icb_cmd2itcm_r:        std_ulogic;
+  signal ifu2itcm_icb_rsp_instr:std_ulogic_vector(31 downto 0);
 `end if
 
 `if E203_HAS_MEM_ITF = "TRUE" then
-  signal ifu_req_pc2mem:        std_logic;
-  signal ifu_icb_cmd2biu:       std_logic;
-  signal icb_cmd2biu_r:         std_logic;
-  signal ifu2biu_icb_rsp_instr: std_logic_vector(31 downto 0);
-  signal ifu2biu_icb_cmd_valid_pre: std_logic;
-  signal ifu2biu_icb_cmd_addr_pre:  std_logic_vector(E203_ADDR_SIZE-1 downto 0);
-  signal ifu2biu_icb_cmd_ready_pre: std_logic;
+  signal ifu_req_pc2mem:        std_ulogic;
+  signal ifu_icb_cmd2biu:       std_ulogic;
+  signal icb_cmd2biu_r:         std_ulogic;
+  signal ifu2biu_icb_rsp_instr: std_ulogic_vector(31 downto 0);
+  signal ifu2biu_icb_cmd_valid_pre: std_ulogic;
+  signal ifu2biu_icb_cmd_addr_pre:  std_ulogic_vector(E203_ADDR_SIZE-1 downto 0);
+  signal ifu2biu_icb_cmd_ready_pre: std_ulogic;
 `end if
   
-  signal ifu_req_lane_cross:    std_logic;
-  signal ifu_req_lane_begin:    std_logic;
- 
-  signal req_lane_status:       std_logic;
-  signal req_lane_cross_r:      std_logic;
-  signal ifu_req_lane_same:     std_logic;
+  signal ifu_req_lane_cross:    std_ulogic;
+  signal ifu_req_lane_begin:    std_ulogic;
 
-  signal ifu_req_lane_holdup:   std_logic;
+  signal req_lane_status:       std_ulogic;
+  signal req_lane_cross_r:      std_ulogic;
+  signal ifu_req_lane_same:     std_ulogic;
 
-  signal ifu_req_hsked:         std_logic;
-  signal i_ifu_rsp_hsked:       std_logic;
-  signal ifu_icb_cmd_valid:     std_logic;
-  signal ifu_icb_cmd_ready:     std_logic;
-  signal ifu_icb_cmd_hsked:     std_logic;
-  signal ifu_icb_rsp_valid:     std_logic;
-  signal ifu_icb_rsp_ready:     std_logic;
-  signal ifu_icb_rsp_hsked:     std_logic;
+  signal ifu_req_lane_holdup:   std_ulogic;
 
-  signal req_need_2uop_r:       std_logic;
-  signal req_need_0uop_r:       std_logic;
+  signal ifu_req_hsked:         std_ulogic;
+  signal i_ifu_rsp_hsked:       std_ulogic;
+  signal ifu_icb_cmd_valid:     std_ulogic;
+  signal ifu_icb_cmd_ready:     std_ulogic;
+  signal ifu_icb_cmd_hsked:     std_ulogic;
+  signal ifu_icb_rsp_valid:     std_ulogic;
+  signal ifu_icb_rsp_ready:     std_ulogic;
+  signal ifu_icb_rsp_hsked:     std_ulogic;
+
+  signal req_need_2uop_r:       std_ulogic;
+  signal req_need_0uop_r:       std_ulogic;
  
   constant ICB_STATE_WIDTH:     integer:= 2;
   -- State 0: The idle state, means there is no any oustanding ifetch request
-  constant ICB_STATE_IDLE:      std_logic_vector(ICB_STATE_WIDTH-1 downto 0):= "00";
+  constant ICB_STATE_IDLE:      std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0):= "00";
   -- State 1: Issued first request and wait response
-  constant ICB_STATE_1ST:       std_logic_vector(ICB_STATE_WIDTH-1 downto 0):= "01";
+  constant ICB_STATE_1ST:       std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0):= "01";
   -- State 2: Wait to issue second request
-  constant ICB_STATE_WAIT2ND:   std_logic_vector(ICB_STATE_WIDTH-1 downto 0):= "10";
+  constant ICB_STATE_WAIT2ND:   std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0):= "10";
   -- State 3: Issued second request and wait response
-  constant ICB_STATE_2ND:       std_logic_vector(ICB_STATE_WIDTH-1 downto 0):= "11";
+  constant ICB_STATE_2ND:       std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0):= "11";
 
-  signal   icb_state_nxt:       std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal   icb_state_r:         std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal   icb_state_ena:       std_logic;
-  signal   state_idle_nxt:      std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal   state_1st_nxt:       std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal   state_wait2nd_nxt:   std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal   state_2nd_nxt:       std_logic_vector(ICB_STATE_WIDTH-1 downto 0);
-  signal state_idle_exit_ena:   std_logic;
-  signal state_1st_exit_ena:    std_logic;
-  signal state_wait2nd_exit_ena:std_logic;
-  signal state_2nd_exit_ena:    std_logic;
-  signal icb_sta_is_idle:       std_logic;
-  signal icb_sta_is_1st:        std_logic;
-  signal icb_sta_is_wait2nd:    std_logic;
-  signal icb_sta_is_2nd:        std_logic;
-  signal ifu_icb_rsp2leftover:  std_logic;
-  signal is_icb_rsp2leftover:   std_logic;
-  signal req_same_cross_holdup_r:std_logic;
-  signal req_same_cross_holdup:  std_logic;
-  signal req_need_2uop:          std_logic;
-  signal req_need_0uop:          std_logic;
+  signal   icb_state_nxt:       std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal   icb_state_r:         std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal   icb_state_ena:       std_ulogic;
+  signal   state_idle_nxt:      std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal   state_1st_nxt:       std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal   state_wait2nd_nxt:   std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal   state_2nd_nxt:       std_ulogic_vector(ICB_STATE_WIDTH-1 downto 0);
+  signal state_idle_exit_ena:   std_ulogic;
+  signal state_1st_exit_ena:    std_ulogic;
+  signal state_wait2nd_exit_ena:std_ulogic;
+  signal state_2nd_exit_ena:    std_ulogic;
+  signal icb_sta_is_idle:       std_ulogic;
+  signal icb_sta_is_1st:        std_ulogic;
+  signal icb_sta_is_wait2nd:    std_ulogic;
+  signal icb_sta_is_2nd:        std_ulogic;
+  signal ifu_icb_rsp2leftover:  std_ulogic;
+  signal is_icb_rsp2leftover:   std_ulogic;
+  signal req_same_cross_holdup_r:std_ulogic;
+  signal req_same_cross_holdup:  std_ulogic;
+  signal req_need_2uop:          std_ulogic;
+  signal req_need_0uop:          std_ulogic;
 
-  signal ifu_icb_cmd_addr:       std_logic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_icb_cmd_addr:       std_ulogic_vector(E203_PC_SIZE-1 downto 0);
   
-  signal icb_cmd_addr_2_1_ena:   std_logic;
-  signal icb_cmd_addr_2_1_r:     std_logic_vector(1 downto 0);
+  signal icb_cmd_addr_2_1_ena:   std_ulogic;
+  signal icb_cmd_addr_2_1_r:     std_ulogic_vector(1 downto 0);
 
-  signal leftover_ena:           std_logic;
-  signal leftover_nxt:           std_logic_vector(15 downto 0);
-  signal leftover_r:             std_logic_vector(15 downto 0);
-  signal leftover_err_nxt:       std_logic;
-  signal leftover_err_r:         std_logic;
-  signal holdup2leftover_sel:    std_logic;
-  signal holdup2leftover_ena:    std_logic;
-  signal put2leftover_data:      std_logic_vector(15 downto 0);
+  signal leftover_ena:           std_ulogic;
+  signal leftover_nxt:           std_ulogic_vector(15 downto 0);
+  signal leftover_r:             std_ulogic_vector(15 downto 0);
+  signal leftover_err_nxt:       std_ulogic;
+  signal leftover_err_r:         std_ulogic;
+  signal holdup2leftover_sel:    std_ulogic;
+  signal holdup2leftover_ena:    std_ulogic;
+  signal put2leftover_data:      std_ulogic_vector(15 downto 0);
 
-  signal uop1st2leftover_sel:    std_logic;
-  signal uop1st2leftover_ena:    std_logic;
-  signal uop1st2leftover_err:    std_logic;
+  signal uop1st2leftover_sel:    std_ulogic;
+  signal uop1st2leftover_ena:    std_ulogic;
+  signal uop1st2leftover_err:    std_ulogic;
 
-  signal rsp_instr_sel_leftover: std_logic;
-  signal rsp_instr_sel_icb_rsp:  std_logic;
-  signal ifu_icb_rsp_rdata_lsb16:std_logic_vector(15 downto 0);
+  signal rsp_instr_sel_leftover: std_ulogic;
+  signal rsp_instr_sel_icb_rsp:  std_ulogic;
+  signal ifu_icb_rsp_rdata_lsb16:std_ulogic_vector(15 downto 0);
 
-  signal ifu_icb_rsp_instr:      std_logic_vector(31 downto 0);
-  signal ifu_icb_rsp_err:        std_logic;
+  signal ifu_icb_rsp_instr:      std_ulogic_vector(31 downto 0);
+  signal ifu_icb_rsp_err:        std_ulogic;
 
-  signal holdup_gen_fake_rsp_valid: std_logic;
+  signal holdup_gen_fake_rsp_valid: std_ulogic;
   
-  signal ifu_icb_rsp2ir_ready:   std_logic;
-  signal ifu_icb_rsp2ir_valid:   std_logic;
+  signal ifu_icb_rsp2ir_ready:   std_ulogic;
+  signal ifu_icb_rsp2ir_valid:   std_ulogic;
 
-  signal ifu_req_valid_pos:      std_logic;
-  signal icb_addr_sel_1stnxtalgn:std_logic;
-  signal icb_addr_sel_2ndnxtalgn:std_logic;
-  signal icb_addr_sel_cur:       std_logic;
-  signal nxtalgn_plus_offset:    signed(E203_PC_SIZE-1 downto 0);
-  signal icb_algn_nxt_lane_addr: std_logic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_req_valid_pos:      std_ulogic;
+  signal icb_addr_sel_1stnxtalgn:std_ulogic;
+  signal icb_addr_sel_2ndnxtalgn:std_ulogic;
+  signal icb_addr_sel_cur:       std_ulogic;
+  signal nxtalgn_plus_offset:    u_signed(E203_PC_SIZE-1 downto 0);
+  signal icb_algn_nxt_lane_addr: std_ulogic_vector(E203_PC_SIZE-1 downto 0);
 
-  signal ifu_req_ready_condi:    std_logic;
+  signal ifu_req_ready_condi:    std_ulogic;
 
   component sirv_gnrl_bypbuf is
     generic(
@@ -838,7 +838,7 @@ begin
                          to_signed(4,E203_PC_SIZE);
 
   -- Since we always fetch 32bits
-  icb_algn_nxt_lane_addr <= std_logic_vector(signed(ifu_req_last_pc) + nxtalgn_plus_offset);                       
+  icb_algn_nxt_lane_addr <= std_logic_vector(u_signed(ifu_req_last_pc) + nxtalgn_plus_offset);                       
   ifu_icb_cmd_addr <=    ((E203_PC_SIZE-1 downto 0 => (icb_addr_sel_1stnxtalgn or icb_addr_sel_2ndnxtalgn)) and icb_algn_nxt_lane_addr)
                       or ((E203_PC_SIZE-1 downto 0 => icb_addr_sel_cur) and ifu_req_pc);
 

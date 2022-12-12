@@ -84,484 +84,484 @@ entity e203_exu_decode is
 end e203_exu_decode;
 
 architecture impl of e203_exu_decode is 
-  signal rv32_instr:    std_logic_vector(32-1 downto 0);
-  signal rv16_instr:    std_logic_vector(16-1 downto 0);
-  signal opcode:        std_logic_vector(6 downto 0);
+  signal rv32_instr:    std_ulogic_vector(32-1 downto 0);
+  signal rv16_instr:    std_ulogic_vector(16-1 downto 0);
+  signal opcode:        std_ulogic_vector(6 downto 0);
 
-  signal opcode_1_0_00: std_logic;
-  signal opcode_1_0_01: std_logic;
-  signal opcode_1_0_10: std_logic;
-  signal opcode_1_0_11: std_logic;
+  signal opcode_1_0_00: std_ulogic;
+  signal opcode_1_0_01: std_ulogic;
+  signal opcode_1_0_10: std_ulogic;
+  signal opcode_1_0_11: std_ulogic;
 
-  signal rv32:          std_logic;
+  signal rv32:          std_ulogic;
 
-  signal rv32_rd:       std_logic_vector(4 downto 0);
-  signal rv32_func3:    std_logic_vector(2 downto 0);
-  signal rv32_rs1:      std_logic_vector(4 downto 0);
-  signal rv32_rs2:      std_logic_vector(4 downto 0);
-  signal rv32_func7:    std_logic_vector(6 downto 0);
+  signal rv32_rd:       std_ulogic_vector(4 downto 0);
+  signal rv32_func3:    std_ulogic_vector(2 downto 0);
+  signal rv32_rs1:      std_ulogic_vector(4 downto 0);
+  signal rv32_rs2:      std_ulogic_vector(4 downto 0);
+  signal rv32_func7:    std_ulogic_vector(6 downto 0);
 
-  signal rv16_rd:       std_logic_vector(4 downto 0);
-  signal rv16_rs1:      std_logic_vector(4 downto 0);
-  signal rv16_rs2:      std_logic_vector(4 downto 0);
+  signal rv16_rd:       std_ulogic_vector(4 downto 0);
+  signal rv16_rs1:      std_ulogic_vector(4 downto 0);
+  signal rv16_rs2:      std_ulogic_vector(4 downto 0);
 
-  signal rv16_rdd:      std_logic_vector(4 downto 0);
-  signal rv16_rss1:     std_logic_vector(4 downto 0);
-  signal rv16_rss2:     std_logic_vector(4 downto 0);
-  signal rv16_func3:    std_logic_vector(2 downto 0);
+  signal rv16_rdd:      std_ulogic_vector(4 downto 0);
+  signal rv16_rss1:     std_ulogic_vector(4 downto 0);
+  signal rv16_rss2:     std_ulogic_vector(4 downto 0);
+  signal rv16_func3:    std_ulogic_vector(2 downto 0);
 
-  signal opcode_4_2_000     :std_logic;
-  signal opcode_4_2_001     :std_logic;
-  signal opcode_4_2_010     :std_logic;
-  signal opcode_4_2_011     :std_logic;
-  signal opcode_4_2_100     :std_logic;
-  signal opcode_4_2_101     :std_logic;
-  signal opcode_4_2_110     :std_logic;
-  signal opcode_4_2_111     :std_logic;
-  signal opcode_6_5_00      :std_logic;
-  signal opcode_6_5_01      :std_logic;
-  signal opcode_6_5_10      :std_logic;
-  signal opcode_6_5_11      :std_logic;
+  signal opcode_4_2_000     :std_ulogic;
+  signal opcode_4_2_001     :std_ulogic;
+  signal opcode_4_2_010     :std_ulogic;
+  signal opcode_4_2_011     :std_ulogic;
+  signal opcode_4_2_100     :std_ulogic;
+  signal opcode_4_2_101     :std_ulogic;
+  signal opcode_4_2_110     :std_ulogic;
+  signal opcode_4_2_111     :std_ulogic;
+  signal opcode_6_5_00      :std_ulogic;
+  signal opcode_6_5_01      :std_ulogic;
+  signal opcode_6_5_10      :std_ulogic;
+  signal opcode_6_5_11      :std_ulogic;
 
-  signal rv32_func3_000     :std_logic;
-  signal rv32_func3_001     :std_logic;
-  signal rv32_func3_010     :std_logic;
-  signal rv32_func3_011     :std_logic;
-  signal rv32_func3_100     :std_logic;
-  signal rv32_func3_101     :std_logic;
-  signal rv32_func3_110     :std_logic;
-  signal rv32_func3_111     :std_logic;
+  signal rv32_func3_000     :std_ulogic;
+  signal rv32_func3_001     :std_ulogic;
+  signal rv32_func3_010     :std_ulogic;
+  signal rv32_func3_011     :std_ulogic;
+  signal rv32_func3_100     :std_ulogic;
+  signal rv32_func3_101     :std_ulogic;
+  signal rv32_func3_110     :std_ulogic;
+  signal rv32_func3_111     :std_ulogic;
 
-  signal rv16_func3_000     :std_logic;
-  signal rv16_func3_001     :std_logic;
-  signal rv16_func3_010     :std_logic;
-  signal rv16_func3_011     :std_logic;
-  signal rv16_func3_100     :std_logic;
-  signal rv16_func3_101     :std_logic;
-  signal rv16_func3_110     :std_logic;
-  signal rv16_func3_111     :std_logic;
+  signal rv16_func3_000     :std_ulogic;
+  signal rv16_func3_001     :std_ulogic;
+  signal rv16_func3_010     :std_ulogic;
+  signal rv16_func3_011     :std_ulogic;
+  signal rv16_func3_100     :std_ulogic;
+  signal rv16_func3_101     :std_ulogic;
+  signal rv16_func3_110     :std_ulogic;
+  signal rv16_func3_111     :std_ulogic;
 
-  signal rv32_func7_0000000 :std_logic;
-  signal rv32_func7_0100000 :std_logic;
-  signal rv32_func7_0000001 :std_logic;
-  signal rv32_func7_0000101 :std_logic;
-  signal rv32_func7_0001001 :std_logic;
-  signal rv32_func7_0001101 :std_logic;
-  signal rv32_func7_0010101 :std_logic;
-  signal rv32_func7_0100001 :std_logic;
-  signal rv32_func7_0010001 :std_logic;
-  signal rv32_func7_0101101 :std_logic;
-  signal rv32_func7_1111111 :std_logic;
-  signal rv32_func7_0000100 :std_logic;
-  signal rv32_func7_0001000 :std_logic;
-  signal rv32_func7_0001100 :std_logic;
-  signal rv32_func7_0101100 :std_logic;
-  signal rv32_func7_0010000 :std_logic;
-  signal rv32_func7_0010100 :std_logic;
-  signal rv32_func7_1100000 :std_logic;
-  signal rv32_func7_1110000 :std_logic;
-  signal rv32_func7_1010000 :std_logic;
-  signal rv32_func7_1101000 :std_logic;
-  signal rv32_func7_1111000 :std_logic;
-  signal rv32_func7_1010001 :std_logic;
-  signal rv32_func7_1110001 :std_logic;
-  signal rv32_func7_1100001 :std_logic;
-  signal rv32_func7_1101001 :std_logic;
+  signal rv32_func7_0000000 :std_ulogic;
+  signal rv32_func7_0100000 :std_ulogic;
+  signal rv32_func7_0000001 :std_ulogic;
+  signal rv32_func7_0000101 :std_ulogic;
+  signal rv32_func7_0001001 :std_ulogic;
+  signal rv32_func7_0001101 :std_ulogic;
+  signal rv32_func7_0010101 :std_ulogic;
+  signal rv32_func7_0100001 :std_ulogic;
+  signal rv32_func7_0010001 :std_ulogic;
+  signal rv32_func7_0101101 :std_ulogic;
+  signal rv32_func7_1111111 :std_ulogic;
+  signal rv32_func7_0000100 :std_ulogic;
+  signal rv32_func7_0001000 :std_ulogic;
+  signal rv32_func7_0001100 :std_ulogic;
+  signal rv32_func7_0101100 :std_ulogic;
+  signal rv32_func7_0010000 :std_ulogic;
+  signal rv32_func7_0010100 :std_ulogic;
+  signal rv32_func7_1100000 :std_ulogic;
+  signal rv32_func7_1110000 :std_ulogic;
+  signal rv32_func7_1010000 :std_ulogic;
+  signal rv32_func7_1101000 :std_ulogic;
+  signal rv32_func7_1111000 :std_ulogic;
+  signal rv32_func7_1010001 :std_ulogic;
+  signal rv32_func7_1110001 :std_ulogic;
+  signal rv32_func7_1100001 :std_ulogic;
+  signal rv32_func7_1101001 :std_ulogic;
 
-  signal rv32_rs1_x0        :std_logic;
-  signal rv32_rs2_x0        :std_logic;
-  signal rv32_rs2_x1        :std_logic;
-  signal rv32_rd_x0         :std_logic;
-  signal rv32_rd_x2         :std_logic;
-       
-  signal rv16_rs1_x0        :std_logic;
-  signal rv16_rs2_x0        :std_logic;
-  signal rv16_rd_x0         :std_logic;
-  signal rv16_rd_x2         :std_logic;
+  signal rv32_rs1_x0        :std_ulogic;
+  signal rv32_rs2_x0        :std_ulogic;
+  signal rv32_rs2_x1        :std_ulogic;
+  signal rv32_rd_x0         :std_ulogic;
+  signal rv32_rd_x2         :std_ulogic;
 
-  signal rv32_rs1_x31       :std_logic;
-  signal rv32_rs2_x31       :std_logic;
-  signal rv32_rd_x31        :std_logic;
+  signal rv16_rs1_x0        :std_ulogic;
+  signal rv16_rs2_x0        :std_ulogic;
+  signal rv16_rd_x0         :std_ulogic;
+  signal rv16_rd_x2         :std_ulogic;
 
-  signal rv32_load          :std_logic;
-  signal rv32_store         :std_logic;
-  signal rv32_madd          :std_logic;
-  signal rv32_branch        :std_logic;
+  signal rv32_rs1_x31       :std_ulogic;
+  signal rv32_rs2_x31       :std_ulogic;
+  signal rv32_rd_x31        :std_ulogic;
 
-  signal rv32_load_fp       :std_logic;
-  signal rv32_store_fp      :std_logic;
-  signal rv32_msub          :std_logic;
-  signal rv32_jalr          :std_logic;
+  signal rv32_load          :std_ulogic;
+  signal rv32_store         :std_ulogic;
+  signal rv32_madd          :std_ulogic;
+  signal rv32_branch        :std_ulogic;
 
-  signal rv32_custom0       :std_logic;
-  signal rv32_custom1       :std_logic;
-  signal rv32_nmsub         :std_logic;
-  signal rv32_resved0       :std_logic;
-  signal rv32_miscmem       :std_logic;
+  signal rv32_load_fp       :std_ulogic;
+  signal rv32_store_fp      :std_ulogic;
+  signal rv32_msub          :std_ulogic;
+  signal rv32_jalr          :std_ulogic;
 
-  signal rv32_amo           :std_logic;
+  signal rv32_custom0       :std_ulogic;
+  signal rv32_custom1       :std_ulogic;
+  signal rv32_nmsub         :std_ulogic;
+  signal rv32_resved0       :std_ulogic;
+  signal rv32_miscmem       :std_ulogic;
 
-  signal rv32_nmadd         :std_logic; 
-  signal rv32_jal           :std_logic; 
+  signal rv32_amo           :std_ulogic;
 
-  signal rv32_op_imm        :std_logic; 
-  signal rv32_op            :std_logic; 
-  signal rv32_op_fp         :std_logic; 
-  signal rv32_system        :std_logic; 
+  signal rv32_nmadd         :std_ulogic; 
+  signal rv32_jal           :std_ulogic; 
 
-  signal rv32_auipc         :std_logic; 
-  signal rv32_lui           :std_logic; 
-  signal rv32_resved1       :std_logic; 
-  signal rv32_resved2       :std_logic; 
+  signal rv32_op_imm        :std_ulogic; 
+  signal rv32_op            :std_ulogic; 
+  signal rv32_op_fp         :std_ulogic; 
+  signal rv32_system        :std_ulogic; 
 
-  signal rv32_op_imm_32     :std_logic; 
-  signal rv32_op_32         :std_logic; 
-  signal rv32_custom2       :std_logic; 
-  signal rv32_custom3       :std_logic; 
+  signal rv32_auipc         :std_ulogic; 
+  signal rv32_lui           :std_ulogic; 
+  signal rv32_resved1       :std_ulogic; 
+  signal rv32_resved2       :std_ulogic; 
 
-  signal rv16_addi4spn      :std_logic;
-  signal rv16_lw            :std_logic;
-  signal rv16_sw            :std_logic;
+  signal rv32_op_imm_32     :std_ulogic; 
+  signal rv32_op_32         :std_ulogic; 
+  signal rv32_custom2       :std_ulogic; 
+  signal rv32_custom3       :std_ulogic; 
 
-  signal rv16_addi          :std_logic;
-  signal rv16_jal           :std_logic;
-  signal rv16_li            :std_logic;
-  signal rv16_lui_addi16sp  :std_logic;
-  signal rv16_miscalu       :std_logic;
-  signal rv16_j             :std_logic;
-  signal rv16_beqz          :std_logic;
-  signal rv16_bnez          :std_logic;
-  
-  signal rv16_slli          :std_logic;
-  signal rv16_lwsp          :std_logic;
-  signal rv16_jalr_mv_add   :std_logic;
-  signal rv16_swsp          :std_logic;
+  signal rv16_addi4spn      :std_ulogic;
+  signal rv16_lw            :std_ulogic;
+  signal rv16_sw            :std_ulogic;
+
+  signal rv16_addi          :std_ulogic;
+  signal rv16_jal           :std_ulogic;
+  signal rv16_li            :std_ulogic;
+  signal rv16_lui_addi16sp  :std_ulogic;
+  signal rv16_miscalu       :std_ulogic;
+  signal rv16_j             :std_ulogic;
+  signal rv16_beqz          :std_ulogic;
+  signal rv16_bnez          :std_ulogic;
+
+  signal rv16_slli          :std_ulogic;
+  signal rv16_lwsp          :std_ulogic;
+  signal rv16_jalr_mv_add   :std_ulogic;
+  signal rv16_swsp          :std_ulogic;
 
   `if E203_HAS_FPU = "FALSE" then
-  constant rv16_flw         :std_logic:= '0';
-  constant rv16_fld         :std_logic:= '0';
-  constant rv16_fsw         :std_logic:= '0';
-  constant rv16_fsd         :std_logic:= '0';
-  constant rv16_fldsp       :std_logic:= '0';
-  constant rv16_flwsp       :std_logic:= '0';
-  constant rv16_fsdsp       :std_logic:= '0';
-  constant rv16_fswsp       :std_logic:= '0';
+  constant rv16_flw         :std_ulogic:= '0';
+  constant rv16_fld         :std_ulogic:= '0';
+  constant rv16_fsw         :std_ulogic:= '0';
+  constant rv16_fsd         :std_ulogic:= '0';
+  constant rv16_fldsp       :std_ulogic:= '0';
+  constant rv16_flwsp       :std_ulogic:= '0';
+  constant rv16_fsdsp       :std_ulogic:= '0';
+  constant rv16_fswsp       :std_ulogic:= '0';
   `end if
 
-  signal rv16_lwsp_ilgl      :std_logic;
+  signal rv16_lwsp_ilgl      :std_ulogic;
 
-  signal rv16_nop            :std_logic;
+  signal rv16_nop            :std_ulogic;
 
-  signal rv16_srli           :std_logic;
-  signal rv16_srai           :std_logic;
-  signal rv16_andi           :std_logic;
+  signal rv16_srli           :std_ulogic;
+  signal rv16_srai           :std_ulogic;
+  signal rv16_andi           :std_ulogic;
 
-  signal rv16_instr_12_is0   :std_logic;
-  signal rv16_instr_6_2_is0s :std_logic;
+  signal rv16_instr_12_is0   :std_ulogic;
+  signal rv16_instr_6_2_is0s :std_ulogic;
 
-  signal rv16_sxxi_shamt_legl:std_logic;
-  signal rv16_sxxi_shamt_ilgl:std_logic;
+  signal rv16_sxxi_shamt_legl:std_ulogic;
+  signal rv16_sxxi_shamt_ilgl:std_ulogic;
 
-  signal rv16_addi16sp       :std_logic;
-  signal rv16_lui            :std_logic;
- 
-  signal rv16_li_ilgl        :std_logic;
+  signal rv16_addi16sp       :std_ulogic;
+  signal rv16_lui            :std_ulogic;
 
-  signal rv16_lui_ilgl       :std_logic;
+  signal rv16_li_ilgl        :std_ulogic;
 
-  signal rv16_li_lui_ilgl    :std_logic;
+  signal rv16_lui_ilgl       :std_ulogic;
 
-  signal rv16_addi4spn_ilgl  :std_logic;
-  signal rv16_addi16sp_ilgl  :std_logic;
+  signal rv16_li_lui_ilgl    :std_ulogic;
 
-  signal rv16_subxororand    :std_logic;
-  signal rv16_sub            :std_logic;
-  signal rv16_xor            :std_logic;
-  signal rv16_or             :std_logic;
-  signal rv16_and            :std_logic;
-  signal rv16_jr             :std_logic;              
-  signal rv16_mv             :std_logic;    
-  signal rv16_ebreak         :std_logic;
-  signal rv16_jalr           :std_logic;
-  signal rv16_add            :std_logic;
+  signal rv16_addi4spn_ilgl  :std_ulogic;
+  signal rv16_addi16sp_ilgl  :std_ulogic;
+
+  signal rv16_subxororand    :std_ulogic;
+  signal rv16_sub            :std_ulogic;
+  signal rv16_xor            :std_ulogic;
+  signal rv16_or             :std_ulogic;
+  signal rv16_and            :std_ulogic;
+  signal rv16_jr             :std_ulogic;              
+  signal rv16_mv             :std_ulogic;    
+  signal rv16_ebreak         :std_ulogic;
+  signal rv16_jalr           :std_ulogic;
+  signal rv16_add            :std_ulogic;
 
   `if  E203_HAS_NICE = "TRUE" then
-  signal nice_need_rs1:       std_logic;
-  signal nice_need_rs2:       std_logic;
-  signal nice_need_rd :       std_logic;
-  signal nice_instr   :       std_logic_vector(31 downto 5);
-  signal nice_op:             std_logic;
-  signal nice_info_bus:       std_logic_vector(E203_DECINFO_NICE_WIDTH-1 downto 0);
+  signal nice_need_rs1:       std_ulogic;
+  signal nice_need_rs2:       std_ulogic;
+  signal nice_need_rd :       std_ulogic;
+  signal nice_instr   :       std_ulogic_vector(31 downto 5);
+  signal nice_op:             std_ulogic;
+  signal nice_info_bus:       std_ulogic_vector(E203_DECINFO_NICE_WIDTH-1 downto 0);
   `end if
-  signal is_nice_need_rs1:    std_logic;
-  signal is_nice_need_rs2:    std_logic;
-  signal is_nice_need_rd :    std_logic;
+  signal is_nice_need_rs1:    std_ulogic;
+  signal is_nice_need_rs2:    std_ulogic;
+  signal is_nice_need_rd :    std_ulogic;
 
   -- Branch Instructions
-  signal rv32_beq :           std_logic;
-  signal rv32_bne :           std_logic;
-  signal rv32_blt :           std_logic;
-  signal rv32_bgt :           std_logic;
-  signal rv32_bltu:           std_logic;
-  signal rv32_bgtu:           std_logic;
+  signal rv32_beq :           std_ulogic;
+  signal rv32_bne :           std_ulogic;
+  signal rv32_blt :           std_ulogic;
+  signal rv32_bgt :           std_ulogic;
+  signal rv32_bltu:           std_ulogic;
+  signal rv32_bgtu:           std_ulogic;
 
   -- System Instructions
-  signal rv32_ecall :         std_logic;
-  signal rv32_ebreak:         std_logic;
-  signal rv32_mret  :         std_logic;
-  signal rv32_dret  :         std_logic;
-  signal rv32_wfi   :         std_logic;
+  signal rv32_ecall :         std_ulogic;
+  signal rv32_ebreak:         std_ulogic;
+  signal rv32_mret  :         std_ulogic;
+  signal rv32_dret  :         std_ulogic;
+  signal rv32_wfi   :         std_ulogic;
   
-  signal rv32_csrrw :         std_logic; 
-  signal rv32_csrrs :         std_logic; 
-  signal rv32_csrrc :         std_logic; 
-  signal rv32_csrrwi:         std_logic; 
-  signal rv32_csrrsi:         std_logic; 
-  signal rv32_csrrci:         std_logic; 
-  signal rv32_dret_ilgl:      std_logic;
-  signal rv32_ecall_ebreak_ret_wfi: std_logic;
-  signal rv32_csr:            std_logic; 
+  signal rv32_csrrw :         std_ulogic; 
+  signal rv32_csrrs :         std_ulogic; 
+  signal rv32_csrrc :         std_ulogic; 
+  signal rv32_csrrwi:         std_ulogic; 
+  signal rv32_csrrsi:         std_ulogic; 
+  signal rv32_csrrci:         std_ulogic; 
+  signal rv32_dret_ilgl:      std_ulogic;
+  signal rv32_ecall_ebreak_ret_wfi: std_ulogic;
+  signal rv32_csr:            std_ulogic; 
 
-  signal rv32_fence:          std_logic;
-  signal rv32_fence_i:        std_logic;
-  signal rv32_fence_fencei:   std_logic;
-  signal bjp_op:              std_logic;
-  signal bjp_info_bus:        std_logic_vector(E203_DECINFO_BJP_WIDTH-1 downto 0);
+  signal rv32_fence:          std_ulogic;
+  signal rv32_fence_i:        std_ulogic;
+  signal rv32_fence_fencei:   std_ulogic;
+  signal bjp_op:              std_ulogic;
+  signal bjp_info_bus:        std_ulogic_vector(E203_DECINFO_BJP_WIDTH-1 downto 0);
 
   -- ALU Instructions
-  signal rv32_addi :          std_logic;
-  signal rv32_slti :          std_logic;
-  signal rv32_sltiu:          std_logic;
-  signal rv32_xori :          std_logic;
-  signal rv32_ori  :          std_logic;
-  signal rv32_andi :          std_logic;
+  signal rv32_addi :          std_ulogic;
+  signal rv32_slti :          std_ulogic;
+  signal rv32_sltiu:          std_ulogic;
+  signal rv32_xori :          std_ulogic;
+  signal rv32_ori  :          std_ulogic;
+  signal rv32_andi :          std_ulogic;
 
-  signal rv32_slli:           std_logic;
-  signal rv32_srli:           std_logic;
-  signal rv32_srai:           std_logic;
+  signal rv32_slli:           std_ulogic;
+  signal rv32_srli:           std_ulogic;
+  signal rv32_srai:           std_ulogic;
 
-  signal rv32_sxxi_shamt_legl:std_logic;
-  signal rv32_sxxi_shamt_ilgl:std_logic;
+  signal rv32_sxxi_shamt_legl:std_ulogic;
+  signal rv32_sxxi_shamt_ilgl:std_ulogic;
 
-  signal rv32_add :           std_logic;
-  signal rv32_sub :           std_logic;
-  signal rv32_sll :           std_logic;
-  signal rv32_slt :           std_logic;
-  signal rv32_sltu:           std_logic;
-  signal rv32_xor :           std_logic;
-  signal rv32_srl :           std_logic;
-  signal rv32_sra :           std_logic;
-  signal rv32_or  :           std_logic;
-  signal rv32_and :           std_logic;
+  signal rv32_add :           std_ulogic;
+  signal rv32_sub :           std_ulogic;
+  signal rv32_sll :           std_ulogic;
+  signal rv32_slt :           std_ulogic;
+  signal rv32_sltu:           std_ulogic;
+  signal rv32_xor :           std_ulogic;
+  signal rv32_srl :           std_ulogic;
+  signal rv32_sra :           std_ulogic;
+  signal rv32_or  :           std_ulogic;
+  signal rv32_and :           std_ulogic;
 
-  signal rv32_nop    :        std_logic;
-  signal ecall_ebreak:        std_logic;
+  signal rv32_nop    :        std_ulogic;
+  signal ecall_ebreak:        std_ulogic;
 
-  signal alu_op:              std_logic;
-  signal need_imm:            std_logic;
-  signal alu_info_bus:        std_logic_vector(E203_DECINFO_ALU_WIDTH-1 downto 0);
+  signal alu_op:              std_ulogic;
+  signal need_imm:            std_ulogic;
+  signal alu_info_bus:        std_ulogic_vector(E203_DECINFO_ALU_WIDTH-1 downto 0);
 
-  signal csr_op:              std_logic;
-  signal csr_info_bus:        std_logic_vector(E203_DECINFO_CSR_WIDTH-1 downto 0);
+  signal csr_op:              std_ulogic;
+  signal csr_info_bus:        std_ulogic_vector(E203_DECINFO_CSR_WIDTH-1 downto 0);
 
-  signal rv32_mul   :         std_logic;
-  signal rv32_mulh  :         std_logic;
-  signal rv32_mulhsu:         std_logic;
-  signal rv32_mulhu :         std_logic;
-  signal rv32_div   :         std_logic;
-  signal rv32_divu  :         std_logic;
-  signal rv32_rem   :         std_logic;
-  signal rv32_remu  :         std_logic;
+  signal rv32_mul   :         std_ulogic;
+  signal rv32_mulh  :         std_ulogic;
+  signal rv32_mulhsu:         std_ulogic;
+  signal rv32_mulhu :         std_ulogic;
+  signal rv32_div   :         std_ulogic;
+  signal rv32_divu  :         std_ulogic;
+  signal rv32_rem   :         std_ulogic;
+  signal rv32_remu  :         std_ulogic;
 
   `if E203_SUPPORT_MULDIV = "TRUE" then
-  signal muldiv_op:           std_logic;
+  signal muldiv_op:           std_ulogic;
   `end if
   `if E203_SUPPORT_MULDIV = "FALSE" then
-  signal muldiv_op:           std_logic;
+  signal muldiv_op:           std_ulogic;
   `end if
 
-  signal muldiv_info_bus:        std_logic_vector(E203_DECINFO_CSR_WIDTH-1 downto 0);
+  signal muldiv_info_bus:        std_ulogic_vector(E203_DECINFO_CSR_WIDTH-1 downto 0);
 
   -- Load/Store Instructions
-  signal rv32_lb :             std_logic;
-  signal rv32_lh :             std_logic;
-  signal rv32_lw :             std_logic;
-  signal rv32_lbu:             std_logic;
-  signal rv32_lhu:             std_logic;
-    
-  signal rv32_sb :             std_logic;
-  signal rv32_sh :             std_logic;
-  signal rv32_sw :             std_logic;
+  signal rv32_lb :             std_ulogic;
+  signal rv32_lh :             std_ulogic;
+  signal rv32_lw :             std_ulogic;
+  signal rv32_lbu:             std_ulogic;
+  signal rv32_lhu:             std_ulogic;
+
+  signal rv32_sb :             std_ulogic;
+  signal rv32_sh :             std_ulogic;
+  signal rv32_sw :             std_ulogic;
 
   -- Atomic Instructions
   `if E203_SUPPORT_AMO = "TRUE" then
-  signal rv32_lr_w     :       std_logic;
-  signal rv32_sc_w     :       std_logic;
-  signal rv32_amoswap_w:       std_logic;
-  signal rv32_amoadd_w :       std_logic;
-  signal rv32_amoxor_w :       std_logic;
-  signal rv32_amoand_w :       std_logic;
-  signal rv32_amoor_w  :       std_logic;
-  signal rv32_amomin_w :       std_logic;
-  signal rv32_amomax_w :       std_logic;
-  signal rv32_amominu_w:       std_logic;
-  signal rv32_amomaxu_w:       std_logic;
+  signal rv32_lr_w     :       std_ulogic;
+  signal rv32_sc_w     :       std_ulogic;
+  signal rv32_amoswap_w:       std_ulogic;
+  signal rv32_amoadd_w :       std_ulogic;
+  signal rv32_amoxor_w :       std_ulogic;
+  signal rv32_amoand_w :       std_ulogic;
+  signal rv32_amoor_w  :       std_ulogic;
+  signal rv32_amomin_w :       std_ulogic;
+  signal rv32_amomax_w :       std_ulogic;
+  signal rv32_amominu_w:       std_ulogic;
+  signal rv32_amomaxu_w:       std_ulogic;
   `end if
   `if E203_SUPPORT_AMO = "FALSE" then
-  constant rv32_lr_w     :     std_logic:= '0';
-  constant rv32_sc_w     :     std_logic:= '0';
-  constant rv32_amoswap_w:     std_logic:= '0';
-  constant rv32_amoadd_w :     std_logic:= '0';
-  constant rv32_amoxor_w :     std_logic:= '0';
-  constant rv32_amoand_w :     std_logic:= '0';
-  constant rv32_amoor_w  :     std_logic:= '0';
-  constant rv32_amomin_w :     std_logic:= '0';
-  constant rv32_amomax_w :     std_logic:= '0';
-  constant rv32_amominu_w:     std_logic:= '0';
-  constant rv32_amomaxu_w:     std_logic:= '0';
+  constant rv32_lr_w     :     std_ulogic:= '0';
+  constant rv32_sc_w     :     std_ulogic:= '0';
+  constant rv32_amoswap_w:     std_ulogic:= '0';
+  constant rv32_amoadd_w :     std_ulogic:= '0';
+  constant rv32_amoxor_w :     std_ulogic:= '0';
+  constant rv32_amoand_w :     std_ulogic:= '0';
+  constant rv32_amoor_w  :     std_ulogic:= '0';
+  constant rv32_amomin_w :     std_ulogic:= '0';
+  constant rv32_amomax_w :     std_ulogic:= '0';
+  constant rv32_amominu_w:     std_ulogic:= '0';
+  constant rv32_amomaxu_w:     std_ulogic:= '0';
   `end if
-  signal amoldst_op:           std_logic;
-  signal lsu_info_size:        std_logic_vector(1 downto 0);
-  signal lsu_info_usign:       std_logic;
-  signal agu_info_bus:         std_logic_vector(E203_DECINFO_AGU_WIDTH-1 downto 0);
+  signal amoldst_op:           std_ulogic;
+  signal lsu_info_size:        std_ulogic_vector(1 downto 0);
+  signal lsu_info_usign:       std_ulogic;
+  signal agu_info_bus:         std_ulogic_vector(E203_DECINFO_AGU_WIDTH-1 downto 0);
   
-  signal rv32_all0s_ilgl:      std_logic;
-  signal rv32_all1s_ilgl:      std_logic;
-  signal rv16_all0s_ilgl:      std_logic;
-  signal rv16_all1s_ilgl:      std_logic;
-  signal rv_all0s1s_ilgl:      std_logic;
+  signal rv32_all0s_ilgl:      std_ulogic;
+  signal rv32_all1s_ilgl:      std_ulogic;
+  signal rv16_all0s_ilgl:      std_ulogic;
+  signal rv16_all1s_ilgl:      std_ulogic;
+  signal rv_all0s1s_ilgl:      std_ulogic;
 
-  signal rv32_need_rd:         std_logic;
-  signal rv32_need_rs1:        std_logic;
-  signal rv32_need_rs2:        std_logic;
+  signal rv32_need_rd:         std_ulogic;
+  signal rv32_need_rs1:        std_ulogic;
+  signal rv32_need_rs2:        std_ulogic;
 
-  signal rv32_i_imm:           std_logic_vector(32-1 downto 0);
-  signal rv32_s_imm:           std_logic_vector(32-1 downto 0);
-  signal rv32_b_imm:           std_logic_vector(32-1 downto 0);
-  signal rv32_u_imm:           std_logic_vector(32-1 downto 0);
-  signal rv32_j_imm:           std_logic_vector(32-1 downto 0);
-  signal rv32_jalr_imm:        std_logic_vector(32-1 downto 0);
-  signal rv32_jal_imm:         std_logic_vector(32-1 downto 0);
-  signal rv32_bxx_imm:         std_logic_vector(32-1 downto 0);
+  signal rv32_i_imm:           std_ulogic_vector(32-1 downto 0);
+  signal rv32_s_imm:           std_ulogic_vector(32-1 downto 0);
+  signal rv32_b_imm:           std_ulogic_vector(32-1 downto 0);
+  signal rv32_u_imm:           std_ulogic_vector(32-1 downto 0);
+  signal rv32_j_imm:           std_ulogic_vector(32-1 downto 0);
+  signal rv32_jalr_imm:        std_ulogic_vector(32-1 downto 0);
+  signal rv32_jal_imm:         std_ulogic_vector(32-1 downto 0);
+  signal rv32_bxx_imm:         std_ulogic_vector(32-1 downto 0);
 
-  signal rv32_imm_sel_i:       std_logic;
-  signal rv32_imm_sel_jalr:    std_logic;
-  signal rv32_imm_sel_u:       std_logic;
-  signal rv32_imm_sel_j:       std_logic;
-  signal rv32_imm_sel_jal:     std_logic;
-  signal rv32_imm_sel_b:       std_logic;
-  signal rv32_imm_sel_bxx:     std_logic;
-  signal rv32_imm_sel_s:       std_logic;
+  signal rv32_imm_sel_i:       std_ulogic;
+  signal rv32_imm_sel_jalr:    std_ulogic;
+  signal rv32_imm_sel_u:       std_ulogic;
+  signal rv32_imm_sel_j:       std_ulogic;
+  signal rv32_imm_sel_jal:     std_ulogic;
+  signal rv32_imm_sel_b:       std_ulogic;
+  signal rv32_imm_sel_bxx:     std_ulogic;
+  signal rv32_imm_sel_s:       std_ulogic;
 
-  signal rv16_imm_sel_cis:     std_logic;
-  signal rv16_imm_sel_cili:    std_logic;
-  signal rv16_imm_sel_cilui:   std_logic;
-  signal rv16_imm_sel_ci16sp:  std_logic;
-  signal rv16_imm_sel_css:     std_logic;
-  signal rv16_imm_sel_ciw:     std_logic;
-  signal rv16_imm_sel_cl:      std_logic;
-  signal rv16_imm_sel_cs:      std_logic;
-  signal rv16_imm_sel_cb:      std_logic;
-  signal rv16_imm_sel_cj:      std_logic;
-  signal rv32_need_imm:        std_logic;
-  signal rv16_need_imm:        std_logic;
+  signal rv16_imm_sel_cis:     std_ulogic;
+  signal rv16_imm_sel_cili:    std_ulogic;
+  signal rv16_imm_sel_cilui:   std_ulogic;
+  signal rv16_imm_sel_ci16sp:  std_ulogic;
+  signal rv16_imm_sel_css:     std_ulogic;
+  signal rv16_imm_sel_ciw:     std_ulogic;
+  signal rv16_imm_sel_cl:      std_ulogic;
+  signal rv16_imm_sel_cs:      std_ulogic;
+  signal rv16_imm_sel_cb:      std_ulogic;
+  signal rv16_imm_sel_cj:      std_ulogic;
+  signal rv32_need_imm:        std_ulogic;
+  signal rv16_need_imm:        std_ulogic;
 
-  signal rv16_cis_imm:         std_logic_vector(32-1 downto 0);
-  signal rv16_cis_d_imm:       std_logic_vector(32-1 downto 0);
-  signal rv16_cili_imm:        std_logic_vector(32-1 downto 0);
-  signal rv16_cilui_imm:       std_logic_vector(32-1 downto 0);
-  signal rv16_ci16sp_imm:      std_logic_vector(32-1 downto 0);
-  signal rv16_css_imm:         std_logic_vector(32-1 downto 0);
-  signal rv16_css_d_imm:       std_logic_vector(32-1 downto 0);
-  signal rv16_ciw_imm:         std_logic_vector(32-1 downto 0);
-  signal rv16_cl_imm:          std_logic_vector(32-1 downto 0);
-  signal rv16_cl_d_imm:        std_logic_vector(32-1 downto 0);
-  signal rv16_cs_imm:          std_logic_vector(32-1 downto 0);
-  signal rv16_cs_d_imm:        std_logic_vector(32-1 downto 0);
-  signal rv16_cb_imm:          std_logic_vector(32-1 downto 0);
-  signal rv16_bxx_imm:         std_logic_vector(32-1 downto 0);
-  signal rv16_cj_imm:          std_logic_vector(32-1 downto 0);
-  signal rv16_jjal_imm:        std_logic_vector(32-1 downto 0);
-  signal rv16_jrjalr_imm:      std_logic_vector(32-1 downto 0);
-  signal rv32_load_fp_imm:     std_logic_vector(32-1 downto 0);
-  signal rv32_store_fp_imm:    std_logic_vector(32-1 downto 0);
-  signal rv32_imm:             std_logic_vector(32-1 downto 0);
-  signal rv16_imm:             std_logic_vector(32-1 downto 0);
+  signal rv16_cis_imm:         std_ulogic_vector(32-1 downto 0);
+  signal rv16_cis_d_imm:       std_ulogic_vector(32-1 downto 0);
+  signal rv16_cili_imm:        std_ulogic_vector(32-1 downto 0);
+  signal rv16_cilui_imm:       std_ulogic_vector(32-1 downto 0);
+  signal rv16_ci16sp_imm:      std_ulogic_vector(32-1 downto 0);
+  signal rv16_css_imm:         std_ulogic_vector(32-1 downto 0);
+  signal rv16_css_d_imm:       std_ulogic_vector(32-1 downto 0);
+  signal rv16_ciw_imm:         std_ulogic_vector(32-1 downto 0);
+  signal rv16_cl_imm:          std_ulogic_vector(32-1 downto 0);
+  signal rv16_cl_d_imm:        std_ulogic_vector(32-1 downto 0);
+  signal rv16_cs_imm:          std_ulogic_vector(32-1 downto 0);
+  signal rv16_cs_d_imm:        std_ulogic_vector(32-1 downto 0);
+  signal rv16_cb_imm:          std_ulogic_vector(32-1 downto 0);
+  signal rv16_bxx_imm:         std_ulogic_vector(32-1 downto 0);
+  signal rv16_cj_imm:          std_ulogic_vector(32-1 downto 0);
+  signal rv16_jjal_imm:        std_ulogic_vector(32-1 downto 0);
+  signal rv16_jrjalr_imm:      std_ulogic_vector(32-1 downto 0);
+  signal rv32_load_fp_imm:     std_ulogic_vector(32-1 downto 0);
+  signal rv32_store_fp_imm:    std_ulogic_vector(32-1 downto 0);
+  signal rv32_imm:             std_ulogic_vector(32-1 downto 0);
+  signal rv16_imm:             std_ulogic_vector(32-1 downto 0);
   
-  signal legl_ops:             std_logic;
-  signal rv16_format_cr:       std_logic;
-  signal rv16_format_ci:       std_logic;
-  signal rv16_format_css:      std_logic;
-  signal rv16_format_ciw:      std_logic;
-  signal rv16_format_cl:       std_logic;
-  signal rv16_format_cs:       std_logic;
-  signal rv16_format_cb:       std_logic;
-  signal rv16_format_cj:       std_logic;
-  signal rv16_need_cr_rs1:     std_logic;
-  signal rv16_need_cr_rs2:     std_logic;
-  signal rv16_need_cr_rd:      std_logic;
-  signal rv16_need_ci_rs1:     std_logic;
-  signal rv16_need_ci_rs2:     std_logic;
-  signal rv16_need_ci_rd:      std_logic;
+  signal legl_ops:             std_ulogic;
+  signal rv16_format_cr:       std_ulogic;
+  signal rv16_format_ci:       std_ulogic;
+  signal rv16_format_css:      std_ulogic;
+  signal rv16_format_ciw:      std_ulogic;
+  signal rv16_format_cl:       std_ulogic;
+  signal rv16_format_cs:       std_ulogic;
+  signal rv16_format_cb:       std_ulogic;
+  signal rv16_format_cj:       std_ulogic;
+  signal rv16_need_cr_rs1:     std_ulogic;
+  signal rv16_need_cr_rs2:     std_ulogic;
+  signal rv16_need_cr_rd:      std_ulogic;
+  signal rv16_need_ci_rs1:     std_ulogic;
+  signal rv16_need_ci_rs2:     std_ulogic;
+  signal rv16_need_ci_rd:      std_ulogic;
 
-  signal rv16_cr_rs1:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cr_rs2:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cr_rd:           std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ci_rs1:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ci_rs2:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ci_rd:           std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cr_rs1:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cr_rs2:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cr_rd:           std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ci_rs1:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ci_rs2:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ci_rd:           std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
 
-  signal rv16_need_css_rs1:    std_logic;
-  signal rv16_need_css_rs2:    std_logic;
-  signal rv16_need_css_rd:     std_logic;
-  signal rv16_need_ciw_rss1:   std_logic;
-  signal rv16_need_ciw_rss2:   std_logic;
-  signal rv16_need_ciw_rdd:    std_logic;
-  signal rv16_need_cl_rss1:    std_logic;
-  signal rv16_need_cl_rss2:    std_logic;
-  signal rv16_need_cl_rdd:     std_logic;
-  signal rv16_need_cs_rss1:    std_logic;
-  signal rv16_need_cs_rss2:    std_logic;
-  signal rv16_need_cs_rdd:     std_logic;
-  signal rv16_need_cb_rss1:    std_logic;
-  signal rv16_need_cb_rss2:    std_logic;
-  signal rv16_need_cb_rdd:     std_logic;
-  signal rv16_need_cj_rss1:    std_logic;
-  signal rv16_need_cj_rss2:    std_logic;
-  signal rv16_need_cj_rdd:     std_logic;
+  signal rv16_need_css_rs1:    std_ulogic;
+  signal rv16_need_css_rs2:    std_ulogic;
+  signal rv16_need_css_rd:     std_ulogic;
+  signal rv16_need_ciw_rss1:   std_ulogic;
+  signal rv16_need_ciw_rss2:   std_ulogic;
+  signal rv16_need_ciw_rdd:    std_ulogic;
+  signal rv16_need_cl_rss1:    std_ulogic;
+  signal rv16_need_cl_rss2:    std_ulogic;
+  signal rv16_need_cl_rdd:     std_ulogic;
+  signal rv16_need_cs_rss1:    std_ulogic;
+  signal rv16_need_cs_rss2:    std_ulogic;
+  signal rv16_need_cs_rdd:     std_ulogic;
+  signal rv16_need_cb_rss1:    std_ulogic;
+  signal rv16_need_cb_rss2:    std_ulogic;
+  signal rv16_need_cb_rdd:     std_ulogic;
+  signal rv16_need_cj_rss1:    std_ulogic;
+  signal rv16_need_cj_rss2:    std_ulogic;
+  signal rv16_need_cj_rdd:     std_ulogic;
 
-  signal rv16_css_rs1:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_css_rs2:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_css_rd:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ciw_rss1:        std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ciw_rss2:        std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_ciw_rdd:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cl_rss1:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cl_rss2:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cl_rdd:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cs_rss1:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cs_rss2:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cs_rdd:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cb_rss1:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cb_rss2:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cb_rdd:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cj_rss1:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cj_rss2:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_cj_rdd:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_css_rs1:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_css_rs2:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_css_rd:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ciw_rss1:        std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ciw_rss2:        std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_ciw_rdd:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cl_rss1:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cl_rss2:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cl_rdd:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cs_rss1:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cs_rss2:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cs_rdd:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cb_rss1:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cb_rss2:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cb_rdd:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cj_rss1:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cj_rss2:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_cj_rdd:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
 
-  signal rv16_need_rs1:        std_logic;
-  signal rv16_need_rs2:        std_logic;
-  signal rv16_need_rd:         std_logic;
-  signal rv16_need_rss1:       std_logic;
-  signal rv16_need_rss2:       std_logic;
-  signal rv16_need_rdd:        std_logic;
-  signal rv16_rs1en:           std_logic;
-  signal rv16_rs2en:           std_logic;
-  signal rv16_rden:            std_logic;
-  signal rv16_rs1idx:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_rs2idx:          std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv16_rdidx:           std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal rv_index_ilgl:        std_logic;
+  signal rv16_need_rs1:        std_ulogic;
+  signal rv16_need_rs2:        std_ulogic;
+  signal rv16_need_rd:         std_ulogic;
+  signal rv16_need_rss1:       std_ulogic;
+  signal rv16_need_rss2:       std_ulogic;
+  signal rv16_need_rdd:        std_ulogic;
+  signal rv16_rs1en:           std_ulogic;
+  signal rv16_rs2en:           std_ulogic;
+  signal rv16_rden:            std_ulogic;
+  signal rv16_rs1idx:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_rs2idx:          std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv16_rdidx:           std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal rv_index_ilgl:        std_ulogic;
 begin 
   rv32_instr <= i_instr;
   rv16_instr <= i_instr(15 downto 0);

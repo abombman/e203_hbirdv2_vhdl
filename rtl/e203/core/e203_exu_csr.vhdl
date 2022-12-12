@@ -100,211 +100,211 @@ entity e203_exu_csr is
 end e203_exu_csr;
 
 architecture impl of e203_exu_csr is 
-  signal wbck_csr_wen: std_logic;
-  signal read_csr_ena: std_logic;
-  signal priv_mode:    std_logic_vector(1 downto 0);
-  signal sel_ustatus:  std_logic;
-  signal sel_mstatus:  std_logic;
-  signal rd_ustatus:   std_logic;
-  signal rd_mstatus:   std_logic;
-  signal wr_ustatus:   std_logic;
-  signal wr_mstatus:   std_logic;
-  signal status_mpie_r:   std_logic;
-  signal status_mpie_ena: std_logic;
-  signal status_mpie_nxt: std_logic;
-  signal status_mie_ena:  std_logic;
-  signal status_mie_nxt:  std_logic;
-  signal status_fs_r:     std_logic_vector(1 downto 0);
-  signal status_xs_r:     std_logic_vector(1 downto 0);
-  signal status_sd_r:     std_logic;
-  signal status_r:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mstatus:     std_logic_vector(E203_XLEN-1 downto 0);
+  signal wbck_csr_wen: std_ulogic;
+  signal read_csr_ena: std_ulogic;
+  signal priv_mode:    std_ulogic_vector(1 downto 0);
+  signal sel_ustatus:  std_ulogic;
+  signal sel_mstatus:  std_ulogic;
+  signal rd_ustatus:   std_ulogic;
+  signal rd_mstatus:   std_ulogic;
+  signal wr_ustatus:   std_ulogic;
+  signal wr_mstatus:   std_ulogic;
+  signal status_mpie_r:   std_ulogic;
+  signal status_mpie_ena: std_ulogic;
+  signal status_mpie_nxt: std_ulogic;
+  signal status_mie_ena:  std_ulogic;
+  signal status_mie_nxt:  std_ulogic;
+  signal status_fs_r:     std_ulogic_vector(1 downto 0);
+  signal status_xs_r:     std_ulogic_vector(1 downto 0);
+  signal status_sd_r:     std_ulogic;
+  signal status_r:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mstatus:     std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal sel_mie:         std_logic;
-  signal rd_mie:          std_logic;
-  signal wr_mie:          std_logic;
-  signal mie_ena:         std_logic;
-  signal mie_r:           std_logic_vector(E203_XLEN-1 downto 0);
-  signal mie_nxt:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mie:         std_logic_vector(E203_XLEN-1 downto 0);
+  signal sel_mie:         std_ulogic;
+  signal rd_mie:          std_ulogic;
+  signal wr_mie:          std_ulogic;
+  signal mie_ena:         std_ulogic;
+  signal mie_r:           std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mie_nxt:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mie:         std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal sel_mip:         std_logic;
-  signal rd_mip:          std_logic;
-  signal meip_r:          std_logic;
-  signal msip_r:          std_logic;
-  signal mtip_r:          std_logic;
-  signal ip_r:            std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mip:         std_logic_vector(E203_XLEN-1 downto 0);
+  signal sel_mip:         std_ulogic;
+  signal rd_mip:          std_ulogic;
+  signal meip_r:          std_ulogic;
+  signal msip_r:          std_ulogic;
+  signal mtip_r:          std_ulogic;
+  signal ip_r:            std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mip:         std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal sel_mtvec:       std_logic;
-  signal rd_mtvec:        std_logic;
+  signal sel_mtvec:       std_ulogic;
+  signal rd_mtvec:        std_ulogic;
  `if E203_SUPPORT_MTVEC = "TRUE" then 
-  signal wr_mtvec:        std_logic;
-  signal mtvec_ena:       std_logic;
-  signal mtvec_r:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal mtvec_nxt:       std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mtvec:       std_logic_vector(E203_XLEN-1 downto 0);
+  signal wr_mtvec:        std_ulogic;
+  signal mtvec_ena:       std_ulogic;
+  signal mtvec_r:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mtvec_nxt:       std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mtvec:       std_ulogic_vector(E203_XLEN-1 downto 0);
   -- THe vector table base is a configurable parameter, so we dont support writeable to it
  `else
-  signal csr_mtvec:       std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_mtvec:       std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
   
-  signal sel_mscratch:    std_logic;
-  signal rd_mscratch:     std_logic;
+  signal sel_mscratch:    std_ulogic;
+  signal rd_mscratch:     std_ulogic;
  `if E203_SUPPORT_MSCRATCH = "TRUE" then 
-  signal wr_mscratch:     std_logic;
-  signal mscratch_ena:    std_logic;
-  signal mscratch_r:      std_logic_vector(E203_XLEN-1 downto 0);
-  signal mscratch_nxt:    std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mscratch:    std_logic_vector(E203_XLEN-1 downto 0);
+  signal wr_mscratch:     std_ulogic;
+  signal mscratch_ena:    std_ulogic;
+  signal mscratch_r:      std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mscratch_nxt:    std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mscratch:    std_ulogic_vector(E203_XLEN-1 downto 0);
  `else
-  signal csr_mscratch:    std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_mscratch:    std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
-  
-  signal sel_mcycle:      std_logic;
-  signal sel_mcycleh:     std_logic;
-  signal sel_minstret:    std_logic;
-  signal sel_minstreth:   std_logic;
-  
-  signal sel_counterstop: std_logic;
-  signal sel_mcgstop:     std_logic;
-  signal sel_itcmnohold:  std_logic;
-  signal sel_mdvnob2b:    std_logic;
-  
-  signal rd_mcycle:       std_logic;
-  signal rd_mcycleh:      std_logic;
-  signal rd_minstret:     std_logic;
-  signal rd_minstreth:    std_logic;
-  
-  signal rd_itcmnohold:   std_logic;
-  signal rd_mdvnob2b:     std_logic;
-  signal rd_counterstop:  std_logic;
-  signal rd_mcgstop:      std_logic;
+
+  signal sel_mcycle:      std_ulogic;
+  signal sel_mcycleh:     std_ulogic;
+  signal sel_minstret:    std_ulogic;
+  signal sel_minstreth:   std_ulogic;
+
+  signal sel_counterstop: std_ulogic;
+  signal sel_mcgstop:     std_ulogic;
+  signal sel_itcmnohold:  std_ulogic;
+  signal sel_mdvnob2b:    std_ulogic;
+
+  signal rd_mcycle:       std_ulogic;
+  signal rd_mcycleh:      std_ulogic;
+  signal rd_minstret:     std_ulogic;
+  signal rd_minstreth:    std_ulogic;
+
+  signal rd_itcmnohold:   std_ulogic;
+  signal rd_mdvnob2b:     std_ulogic;
+  signal rd_counterstop:  std_ulogic;
+  signal rd_mcgstop:      std_ulogic;
 
  `if E203_SUPPORT_MCYCLE_MINSTRET = "TRUE" then
-  signal wr_mcycle:       std_logic;
-  signal wr_mcycleh:      std_logic;
-  signal wr_minstret:     std_logic; 
-  signal wr_minstreth:    std_logic;
+  signal wr_mcycle:       std_ulogic;
+  signal wr_mcycleh:      std_ulogic;
+  signal wr_minstret:     std_ulogic; 
+  signal wr_minstreth:    std_ulogic;
+
+  signal wr_itcmnohold:   std_ulogic;
+  signal wr_mdvnob2b:     std_ulogic;
+  signal wr_counterstop:  std_ulogic;
+  signal wr_mcgstop:      std_ulogic;
   
-  signal wr_itcmnohold:   std_logic;
-  signal wr_mdvnob2b:     std_logic;
-  signal wr_counterstop:  std_logic;
-  signal wr_mcgstop:      std_logic;
-  
-  signal mcycle_wr_ena:       std_logic;
-  signal mcycleh_wr_ena:      std_logic;
-  signal minstret_wr_ena:     std_logic;
-  signal minstreth_wr_ena:    std_logic;
-  
-  signal itcmnohold_wr_ena:   std_logic;
-  signal mdvnob2b_wr_ena:     std_logic;
-  signal counterstop_wr_ena:  std_logic;
-  signal mcgstop_wr_ena:      std_logic;
+  signal mcycle_wr_ena:       std_ulogic;
+  signal mcycleh_wr_ena:      std_ulogic;
+  signal minstret_wr_ena:     std_ulogic;
+  signal minstreth_wr_ena:    std_ulogic;
 
-  signal mcycle_r:            std_logic_vector(E203_XLEN-1 downto 0);
-  signal mcycleh_r:           std_logic_vector(E203_XLEN-1 downto 0);
-  signal minstret_r:          std_logic_vector(E203_XLEN-1 downto 0);
-  signal minstreth_r:         std_logic_vector(E203_XLEN-1 downto 0);
+  signal itcmnohold_wr_ena:   std_ulogic;
+  signal mdvnob2b_wr_ena:     std_ulogic;
+  signal counterstop_wr_ena:  std_ulogic;
+  signal mcgstop_wr_ena:      std_ulogic;
 
-  signal cy_stop:             std_logic;
-  signal ir_stop:             std_logic;
+  signal mcycle_r:            std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mcycleh_r:           std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal minstret_r:          std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal minstreth_r:         std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal stop_cycle_in_dbg:   std_logic;
-  signal mcycle_ena:          std_logic;
-  signal mcycleh_ena:         std_logic;
-  signal minstret_ena:        std_logic;
-  signal minstreth_ena:       std_logic;
+  signal cy_stop:             std_ulogic;
+  signal ir_stop:             std_ulogic;
 
-  signal mcycle_nxt:          std_logic_vector(E203_XLEN-1 downto 0);
-  signal mcycleh_nxt:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal minstret_nxt:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal minstreth_nxt:       std_logic_vector(E203_XLEN-1 downto 0);
+  signal stop_cycle_in_dbg:   std_ulogic;
+  signal mcycle_ena:          std_ulogic;
+  signal mcycleh_ena:         std_ulogic;
+  signal minstret_ena:        std_ulogic;
+  signal minstreth_ena:       std_ulogic;
 
-  signal counterstop_r:       std_logic_vector(E203_XLEN-1 downto 0);
-  signal counterstop_ena:     std_logic;
-  signal counterstop_nxt:     std_logic_vector(E203_XLEN-1 downto 0);
+  signal mcycle_nxt:          std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mcycleh_nxt:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal minstret_nxt:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal minstreth_nxt:       std_ulogic_vector(E203_XLEN-1 downto 0);
+
+  signal counterstop_r:       std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal counterstop_ena:     std_ulogic;
+  signal counterstop_nxt:     std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
 
-  signal csr_mcycle:          std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mcycleh:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_minstret:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_minstreth:       std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_counterstop:     std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_mcycle:          std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mcycleh:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_minstret:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_minstreth:       std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_counterstop:     std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal itcmnohold_r:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal itcmnohold_ena:      std_logic;
-  signal itcmnohold_nxt:      std_logic_vector(E203_XLEN-1 downto 0);
+  signal itcmnohold_r:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal itcmnohold_ena:      std_ulogic;
+  signal itcmnohold_nxt:      std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal csr_itcmnohold:      std_logic_vector(E203_XLEN-1 downto 0);
-  signal mdvnob2b_r:          std_logic_vector(E203_XLEN-1 downto 0);
-  signal mdvnob2b_ena:        std_logic;
-  signal mdvnob2b_nxt:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mdvnob2b:        std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_itcmnohold:      std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mdvnob2b_r:          std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mdvnob2b_ena:        std_ulogic;
+  signal mdvnob2b_nxt:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mdvnob2b:        std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal mcgstop_r:           std_logic_vector(E203_XLEN-1 downto 0);
-  signal mcgstop_ena:         std_logic;
-  signal mcgstop_nxt:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mcgstop:         std_logic_vector(E203_XLEN-1 downto 0);
+  signal mcgstop_r:           std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal mcgstop_ena:         std_ulogic;
+  signal mcgstop_nxt:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mcgstop:         std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal sel_mepc:            std_logic;
-  signal rd_mepc:             std_logic;
-  signal wr_mepc:             std_logic;
-  signal epc_ena:             std_logic;
-  signal epc_r:               std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal epc_nxt:             std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal csr_mepc:            std_logic_vector(E203_XLEN-1 downto 0);
-  signal dummy_0:             std_logic;
+  signal sel_mepc:            std_ulogic;
+  signal rd_mepc:             std_ulogic;
+  signal wr_mepc:             std_ulogic;
+  signal epc_ena:             std_ulogic;
+  signal epc_r:               std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal epc_nxt:             std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal csr_mepc:            std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal dummy_0:             std_ulogic;
 
-  signal sel_mcause:          std_logic;
-  signal rd_mcause:           std_logic;
-  signal wr_mcause:           std_logic;
-  signal cause_ena:           std_logic;
-  signal cause_r:             std_logic_vector(E203_XLEN-1 downto 0);
-  signal cause_nxt:           std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mcause:          std_logic_vector(E203_XLEN-1 downto 0);
+  signal sel_mcause:          std_ulogic;
+  signal rd_mcause:           std_ulogic;
+  signal wr_mcause:           std_ulogic;
+  signal cause_ena:           std_ulogic;
+  signal cause_r:             std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal cause_nxt:           std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mcause:          std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal sel_mbadaddr:        std_logic;
-  signal rd_mbadaddr:         std_logic;
-  signal wr_mbadaddr:         std_logic;
-  signal cmt_trap_badaddr_ena:std_logic;
-  signal badaddr_ena:         std_logic;
-  signal badaddr_r:           std_logic_vector(E203_ADDR_SIZE-1 downto 0);
-  signal badaddr_nxt:         std_logic_vector(E203_ADDR_SIZE-1 downto 0);
-  signal csr_mbadaddr:        std_logic_vector(E203_XLEN-1 downto 0);
-  signal dummy_1:             std_logic;
+  signal sel_mbadaddr:        std_ulogic;
+  signal rd_mbadaddr:         std_ulogic;
+  signal wr_mbadaddr:         std_ulogic;
+  signal cmt_trap_badaddr_ena:std_ulogic;
+  signal badaddr_ena:         std_ulogic;
+  signal badaddr_r:           std_ulogic_vector(E203_ADDR_SIZE-1 downto 0);
+  signal badaddr_nxt:         std_ulogic_vector(E203_ADDR_SIZE-1 downto 0);
+  signal csr_mbadaddr:        std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal dummy_1:             std_ulogic;
 
-  signal sel_misa:            std_logic;
-  signal rd_misa:             std_logic;
-  signal csr_misa:            std_logic_vector(E203_XLEN-1 downto 0);
+  signal sel_misa:            std_ulogic;
+  signal rd_misa:             std_ulogic;
+  signal csr_misa:            std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal csr_mvendorid:       std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_marchid:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mimpid:          std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_mhartid:         std_logic_vector(E203_XLEN-1 downto 0);
-  signal rd_mvendorid:        std_logic;
-  signal rd_marchid:          std_logic;
-  signal rd_mimpid:           std_logic;
-  signal rd_mhartid:          std_logic;
+  signal csr_mvendorid:       std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_marchid:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mimpid:          std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_mhartid:         std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal rd_mvendorid:        std_ulogic;
+  signal rd_marchid:          std_ulogic;
+  signal rd_mimpid:           std_ulogic;
+  signal rd_mhartid:          std_ulogic;
 
-  signal sel_dcsr:            std_logic;
-  signal sel_dpc:             std_logic;
-  signal sel_dscratch:        std_logic;
-  signal rd_dcsr:             std_logic;
-  signal rd_dpc:              std_logic;
-  signal rd_dscratch:         std_logic;
+  signal sel_dcsr:            std_ulogic;
+  signal sel_dpc:             std_ulogic;
+  signal sel_dscratch:        std_ulogic;
+  signal rd_dcsr:             std_ulogic;
+  signal rd_dpc:              std_ulogic;
+  signal rd_dscratch:         std_ulogic;
 
-  signal csr_dcsr:            std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_dcsr:            std_ulogic_vector(E203_XLEN-1 downto 0);
   
  `if E203_PC_SIZE_IS_16 = "TRUE" then
-  signal csr_dpc:             std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_dpc:             std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
  `if E203_PC_SIZE_IS_24 = "TRUE" then
-  signal csr_dpc:             std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_dpc:             std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
  `if E203_PC_SIZE_IS_32 = "TRUE" then
-  signal csr_dpc:             std_logic_vector(E203_XLEN-1 downto 0);
-  signal csr_dscratch:        std_logic_vector(E203_XLEN-1 downto 0);
+  signal csr_dpc:             std_ulogic_vector(E203_XLEN-1 downto 0);
+  signal csr_dscratch:        std_ulogic_vector(E203_XLEN-1 downto 0);
  `end if
   component sirv_gnrl_dfflr is
     generic( DW: integer );
@@ -620,10 +620,10 @@ begin
   minstreth_ena <= minstreth_wr_ena or
                   ((not ir_stop) and (not stop_cycle_in_dbg) and ((cmt_instret_ena and (minstret_r ?= (not (E203_XLEN-1 downto 0 => '0'))))));
   
-  mcycle_nxt    <= wbck_csr_dat when mcycle_wr_ena    = '1' else std_logic_vector((unsigned(mcycle_r   ) + '1'));
-  mcycleh_nxt   <= wbck_csr_dat when mcycleh_wr_ena   = '1' else std_logic_vector((unsigned(mcycleh_r  ) + '1'));
-  minstret_nxt  <= wbck_csr_dat when minstret_wr_ena  = '1' else std_logic_vector((unsigned(minstret_r ) + '1'));
-  minstreth_nxt <= wbck_csr_dat when minstreth_wr_ena = '1' else std_logic_vector((unsigned(minstreth_r) + '1'));
+  mcycle_nxt    <= wbck_csr_dat when mcycle_wr_ena    = '1' else std_logic_vector((u_unsigned(mcycle_r   ) + '1'));
+  mcycleh_nxt   <= wbck_csr_dat when mcycleh_wr_ena   = '1' else std_logic_vector((u_unsigned(mcycleh_r  ) + '1'));
+  minstret_nxt  <= wbck_csr_dat when minstret_wr_ena  = '1' else std_logic_vector((u_unsigned(minstret_r ) + '1'));
+  minstreth_nxt <= wbck_csr_dat when minstreth_wr_ena = '1' else std_logic_vector((u_unsigned(minstreth_r) + '1'));
   
   -- We need to use the always-on clock for this counter
   mcycle_dfflr   : component sirv_gnrl_dfflr generic map (E203_XLEN) port map (mcycle_ena, mcycle_nxt, mcycle_r, clk_aon, rst_n);

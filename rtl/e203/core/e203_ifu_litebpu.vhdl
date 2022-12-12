@@ -91,20 +91,20 @@ end e203_ifu_litebpu;
 
 architecture impl of e203_ifu_litebpu is 
   
-  signal dec_jalr_rs1x0: std_logic;
-  signal dec_jalr_rs1x1: std_logic;
-  signal dec_jalr_rs1xn: std_logic;
+  signal dec_jalr_rs1x0: std_ulogic;
+  signal dec_jalr_rs1x1: std_ulogic;
+  signal dec_jalr_rs1xn: std_ulogic;
 
-  signal jalr_rs1x1_dep: std_logic;
-  signal jalr_rs1xn_dep: std_logic;
+  signal jalr_rs1x1_dep: std_ulogic;
+  signal jalr_rs1xn_dep: std_ulogic;
 
-  signal jalr_rs1xn_dep_ir_clr: std_logic;
+  signal jalr_rs1xn_dep_ir_clr: std_ulogic;
 
-  signal rs1xn_rdrf_r:   std_logic;
-  signal rs1xn_rdrf_set: std_logic;
-  signal rs1xn_rdrf_clr: std_logic;
-  signal rs1xn_rdrf_ena: std_logic;
-  signal rs1xn_rdrf_nxt: std_logic;
+  signal rs1xn_rdrf_r:   std_ulogic;
+  signal rs1xn_rdrf_set: std_ulogic;
+  signal rs1xn_rdrf_clr: std_ulogic;
+  signal rs1xn_rdrf_ena: std_ulogic;
+  signal rs1xn_rdrf_nxt: std_ulogic;
   
   component sirv_gnrl_dfflr is
     generic( DW: integer );

@@ -53,13 +53,13 @@ entity e203_reset_ctrl is
 end e203_reset_ctrl;
   
 architecture impl of e203_reset_ctrl is 
-  signal rst_sync_n: std_logic;
+  signal rst_sync_n: std_ulogic;
   
   `if E203_HAS_LOCKSTEP = "FALSE" then 
     constant RST_SYNC_LEVEL: integer:= E203_ASYNC_FF_LEVELS;    
   `end if
   
-  signal rst_sync_r: std_logic_vector(RST_SYNC_LEVEL-1 downto 0);
+  signal rst_sync_r: std_ulogic_vector(RST_SYNC_LEVEL-1 downto 0);
 
 begin
   master_gen: if MASTER = 1 generate

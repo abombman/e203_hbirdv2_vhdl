@@ -108,147 +108,147 @@ entity e203_ifu_ifetch is
 end e203_ifu_ifetch;
 
 architecture impl of e203_ifu_ifetch is 
-  signal ifu_req_hsked:    std_logic;
-  signal ifu_rsp_hsked:    std_logic;
-  signal ifu_ir_o_hsked:   std_logic;
-  signal pipe_flush_hsked: std_logic;
-  signal reset_flag_r:     std_logic;
+  signal ifu_req_hsked:    std_ulogic;
+  signal ifu_rsp_hsked:    std_ulogic;
+  signal ifu_ir_o_hsked:   std_ulogic;
+  signal pipe_flush_hsked: std_ulogic;
+  signal reset_flag_r:     std_ulogic;
   
-  signal reset_req_set:    std_logic;
-  signal reset_req_clr:    std_logic;
-  signal reset_req_ena:    std_logic;
-  signal reset_req_nxt:    std_logic;
-  signal reset_req_r:      std_logic;
-  signal ifu_reset_req:    std_logic;
+  signal reset_req_set:    std_ulogic;
+  signal reset_req_clr:    std_ulogic;
+  signal reset_req_ena:    std_ulogic;
+  signal reset_req_nxt:    std_ulogic;
+  signal reset_req_r:      std_ulogic;
+  signal ifu_reset_req:    std_ulogic;
 
-  signal halt_ack_set:     std_logic;
-  signal halt_ack_clr:     std_logic;
-  signal halt_ack_ena:     std_logic;
-  signal halt_ack_r:       std_logic;
-  signal halt_ack_nxt:     std_logic;
-  signal ifu_no_outs:      std_logic;
+  signal halt_ack_set:     std_ulogic;
+  signal halt_ack_clr:     std_ulogic;
+  signal halt_ack_ena:     std_ulogic;
+  signal halt_ack_r:       std_ulogic;
+  signal halt_ack_nxt:     std_ulogic;
+  signal ifu_no_outs:      std_ulogic;
 
-  signal dly_flush_set:       std_logic;
-  signal dly_flush_clr:       std_logic;
-  signal dly_flush_ena:       std_logic;
-  signal dly_flush_nxt:       std_logic;
-  signal dly_flush_r:         std_logic;
-  signal dly_pipe_flush_req:  std_logic;
-  signal pipe_flush_req_real: std_logic;
+  signal dly_flush_set:       std_ulogic;
+  signal dly_flush_clr:       std_ulogic;
+  signal dly_flush_ena:       std_ulogic;
+  signal dly_flush_nxt:       std_ulogic;
+  signal dly_flush_r:         std_ulogic;
+  signal dly_pipe_flush_req:  std_ulogic;
+  signal pipe_flush_req_real: std_ulogic;
 
-  signal ir_valid_set:        std_logic;
-  signal ir_valid_clr:        std_logic;
-  signal ir_valid_ena:        std_logic;
-  signal ir_valid_r:          std_logic;
-  signal ir_valid_nxt:        std_logic;
+  signal ir_valid_set:        std_ulogic;
+  signal ir_valid_clr:        std_ulogic;
+  signal ir_valid_ena:        std_ulogic;
+  signal ir_valid_r:          std_ulogic;
+  signal ir_valid_nxt:        std_ulogic;
 
-  signal ir_pc_vld_set:       std_logic;
-  signal ir_pc_vld_clr:       std_logic;
-  signal ir_pc_vld_ena:       std_logic;
-  signal ir_pc_vld_r:         std_logic;
-  signal ir_pc_vld_nxt:       std_logic;
+  signal ir_pc_vld_set:       std_ulogic;
+  signal ir_pc_vld_clr:       std_ulogic;
+  signal ir_pc_vld_ena:       std_ulogic;
+  signal ir_pc_vld_r:         std_ulogic;
+  signal ir_pc_vld_nxt:       std_ulogic;
 
-  signal ifu_rsp_need_replay: std_logic;
-  signal pc_newpend_r:        std_logic;
-  signal ifu_ir_i_ready:      std_logic;
+  signal ifu_rsp_need_replay: std_ulogic;
+  signal pc_newpend_r:        std_ulogic;
+  signal ifu_ir_i_ready:      std_ulogic;
 
-  signal ifu_ir_nxt:          std_logic_vector(E203_INSTR_SIZE-1 downto 0);
-  signal ifu_err_nxt:         std_logic;
-  signal ifu_err_r:           std_logic;
-  signal prdt_taken:          std_logic;
-  signal ifu_prdt_taken_r:    std_logic;
-  signal ifu_muldiv_b2b_nxt:  std_logic;
-  signal ifu_muldiv_b2b_r:    std_logic;
+  signal ifu_ir_nxt:          std_ulogic_vector(E203_INSTR_SIZE-1 downto 0);
+  signal ifu_err_nxt:         std_ulogic;
+  signal ifu_err_r:           std_ulogic;
+  signal prdt_taken:          std_ulogic;
+  signal ifu_prdt_taken_r:    std_ulogic;
+  signal ifu_muldiv_b2b_nxt:  std_ulogic;
+  signal ifu_muldiv_b2b_r:    std_ulogic;
 
-  signal ifu_ir_r:            std_logic_vector(E203_INSTR_SIZE-1 downto 0); -- The instruction register
-  signal minidec_rv32:        std_logic;
-  signal ir_hi_ena:           std_logic;
-  signal ir_lo_ena:           std_logic;
-  signal minidec_rs1en:       std_logic;
-  signal minidec_rs2en:       std_logic;
-  signal minidec_rs1idx:      std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal minidec_rs2idx:      std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal ifu_ir_r:            std_ulogic_vector(E203_INSTR_SIZE-1 downto 0); -- The instruction register
+  signal minidec_rv32:        std_ulogic;
+  signal ir_hi_ena:           std_ulogic;
+  signal ir_lo_ena:           std_ulogic;
+  signal minidec_rs1en:       std_ulogic;
+  signal minidec_rs2en:       std_ulogic;
+  signal minidec_rs1idx:      std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal minidec_rs2idx:      std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
   
   `if E203_HAS_FPU = "FALSE" then
-  constant minidec_fpu:         std_logic:= '0';
-  constant minidec_fpu_rs1en:   std_logic:= '0';
-  constant minidec_fpu_rs2en:   std_logic:= '0';
-  constant minidec_fpu_rs3en:   std_logic:= '0';
-  constant minidec_fpu_rs1fpu:  std_logic:= '0';
-  constant minidec_fpu_rs2fpu:  std_logic:= '0';
-  constant minidec_fpu_rs3fpu:  std_logic:= '0';
-  constant minidec_fpu_rs1idx:  std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
-  constant minidec_fpu_rs2idx:  std_logic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant minidec_fpu:         std_ulogic:= '0';
+  constant minidec_fpu_rs1en:   std_ulogic:= '0';
+  constant minidec_fpu_rs2en:   std_ulogic:= '0';
+  constant minidec_fpu_rs3en:   std_ulogic:= '0';
+  constant minidec_fpu_rs1fpu:  std_ulogic:= '0';
+  constant minidec_fpu_rs2fpu:  std_ulogic:= '0';
+  constant minidec_fpu_rs3fpu:  std_ulogic:= '0';
+  constant minidec_fpu_rs1idx:  std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
+  constant minidec_fpu_rs2idx:  std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0):= (others => '0');
   `end if
 
-  signal bpu2rf_rs1_ena:      std_logic;
-  signal ir_rs1idx_r:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal ir_rs2idx_r:         std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal ir_rs1idx_ena:       std_logic;
-  signal ir_rs2idx_ena:       std_logic;
-  signal ir_rs1idx_nxt:       std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal ir_rs2idx_nxt:       std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-
-  signal pc_r:                std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal ifu_pc_nxt:          std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal ifu_pc_r:            std_logic_vector(E203_PC_SIZE-1 downto 0);
+  signal bpu2rf_rs1_ena:        std_ulogic;
+  signal ir_rs1idx_r:           std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal ir_rs2idx_r:           std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal ir_rs1idx_ena:         std_ulogic;
+  signal ir_rs2idx_ena:         std_ulogic;
+  signal ir_rs1idx_nxt:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal ir_rs2idx_nxt:         std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  
+  signal pc_r:                  std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_pc_nxt:            std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal ifu_pc_r:              std_ulogic_vector(E203_PC_SIZE-1 downto 0);
   
 
-  signal ir_empty:                std_logic;
-  signal ir_rs1en:                std_logic;
-  signal ir_rden:                 std_logic;
-  signal ir_rdidx:                std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal minidec_jalr_rs1idx:     std_logic_vector(E203_RFIDX_WIDTH-1 downto 0);
-  signal minidec_jalr_rs1idx_cp:  std_logic;
-  signal jalr_rs1idx_cam_irrdidx: std_logic;
+  signal ir_empty:                std_ulogic;
+  signal ir_rs1en:                std_ulogic;
+  signal ir_rden:                 std_ulogic;
+  signal ir_rdidx:                std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal minidec_jalr_rs1idx:     std_ulogic_vector(E203_RFIDX_WIDTH-1 downto 0);
+  signal minidec_jalr_rs1idx_cp:  std_ulogic;
+  signal jalr_rs1idx_cam_irrdidx: std_ulogic;
 
-  signal minidec_mul:             std_logic;
-  signal minidec_div:             std_logic;
-  signal minidec_rem:             std_logic;
-  signal minidec_divu:            std_logic;
-  signal minidec_remu:            std_logic;
+  signal minidec_mul:             std_ulogic;
+  signal minidec_div:             std_ulogic;
+  signal minidec_rem:             std_ulogic;
+  signal minidec_divu:            std_ulogic;
+  signal minidec_remu:            std_ulogic;
 
-  signal ir_rs1idx_cp:            std_logic;
-  signal ir_rs2idx_cp:            std_logic;
-  signal ir_rdidx1_cp:            std_logic;
-  signal ir_rdidx2_cp:            std_logic;
+  signal ir_rs1idx_cp:            std_ulogic;
+  signal ir_rs2idx_cp:            std_ulogic;
+  signal ir_rdidx1_cp:            std_ulogic;
+  signal ir_rdidx2_cp:            std_ulogic;
 
-  signal minidec_bjp:             std_logic;
-  signal minidec_jal:             std_logic;
-  signal minidec_jalr:            std_logic;
-  signal minidec_bxx:             std_logic;
-  signal minidec_bjp_imm:         std_logic_vector(E203_XLEN-1 downto 0);
+  signal minidec_bjp:             std_ulogic;
+  signal minidec_jal:             std_ulogic;
+  signal minidec_jalr:            std_ulogic;
+  signal minidec_bxx:             std_ulogic;
+  signal minidec_bjp_imm:         std_ulogic_vector(E203_XLEN-1 downto 0);
 
-  signal bpu_wait:                std_logic;
-  signal prdt_pc_add_op1:         std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal prdt_pc_add_op2:         std_logic_vector(E203_PC_SIZE-1 downto 0);
+  signal bpu_wait:                std_ulogic;
+  signal prdt_pc_add_op1:         std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal prdt_pc_add_op2:         std_ulogic_vector(E203_PC_SIZE-1 downto 0);
 
-  signal pc_incr_ofst:            std_logic_vector(2 downto 0);
-  signal pc_nxt_pre:              std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal pc_nxt:                  std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal bjp_req:                 std_logic;
-  signal ifetch_replay_req:       std_logic;
-  signal pc_add_op1:              std_logic_vector(E203_PC_SIZE-1 downto 0);
-  signal pc_add_op2:              std_logic_vector(E203_PC_SIZE-1 downto 0);
+  signal pc_incr_ofst:            std_ulogic_vector(2 downto 0);
+  signal pc_nxt_pre:              std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal pc_nxt:                  std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal bjp_req:                 std_ulogic;
+  signal ifetch_replay_req:       std_ulogic;
+  signal pc_add_op1:              std_ulogic_vector(E203_PC_SIZE-1 downto 0);
+  signal pc_add_op2:              std_ulogic_vector(E203_PC_SIZE-1 downto 0);
 
-  signal ifu_new_req:             std_logic;
-  signal ifu_req_valid_pre:       std_logic;
-  signal out_flag_clr:            std_logic;
-  signal out_flag_r:              std_logic;
-  signal new_req_condi:           std_logic;
+  signal ifu_new_req:             std_ulogic;
+  signal ifu_req_valid_pre:       std_ulogic;
+  signal out_flag_clr:            std_ulogic;
+  signal out_flag_r:              std_ulogic;
+  signal new_req_condi:           std_ulogic;
 
-  signal ifu_rsp2ir_ready:        std_logic;
+  signal ifu_rsp2ir_ready:        std_ulogic;
 
-  signal pc_ena:                  std_logic;
+  signal pc_ena:                  std_ulogic;
 
-  signal out_flag_set:            std_logic;
-  signal out_flag_ena:            std_logic;
-  signal out_flag_nxt:            std_logic;
+  signal out_flag_set:            std_ulogic;
+  signal out_flag_ena:            std_ulogic;
+  signal out_flag_nxt:            std_ulogic;
 
-  signal pc_newpend_set:          std_logic;
-  signal pc_newpend_clr:          std_logic;
-  signal pc_newpend_ena:          std_logic;
-  signal pc_newpend_nxt:          std_logic;
+  signal pc_newpend_set:          std_ulogic;
+  signal pc_newpend_clr:          std_ulogic;
+  signal pc_newpend_ena:          std_ulogic;
+  signal pc_newpend_nxt:          std_ulogic;
   
 
   component sirv_gnrl_dffrs is
@@ -677,7 +677,7 @@ begin
   ifu_req_seq_rv32 <= minidec_rv32;
   ifu_req_last_pc <= pc_r;
 
-  pc_nxt_pre <= std_logic_vector(signed(pc_add_op1) + signed(pc_add_op2));
+  pc_nxt_pre <= std_logic_vector(u_signed(pc_add_op1) + u_signed(pc_add_op2));
   
   `if E203_TIMING_BOOST = "FALSE" then
   pc_nxt <= (pc_nxt_pre(E203_PC_SIZE-1 downto 1),'0');  

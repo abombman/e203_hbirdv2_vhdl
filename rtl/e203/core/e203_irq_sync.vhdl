@@ -49,7 +49,7 @@ entity e203_irq_sync is
 end e203_irq_sync;
 
 architecture impl of e203_irq_sync is 
-  `if (E203_HAS_LOCKSTEP = "FALSE") and (E203_IRQ_NEED_SYNC = "TRUE") then 
+ `if (E203_HAS_LOCKSTEP = "FALSE") and (E203_IRQ_NEED_SYNC = "TRUE") then 
   component sirv_gnrl_sync is
     generic(
             DP:        integer:= 2;
@@ -62,43 +62,43 @@ architecture impl of e203_irq_sync is
           clk:    in std_logic 
     );
   end component;
-  `end if
+ `end if
 begin
   master_gen: if MASTER = 1 generate
   `if E203_HAS_LOCKSTEP = "FALSE" then 
     `if E203_IRQ_NEED_SYNC = "TRUE" then
     u_dbg_irq_sync: component sirv_gnrl_sync generic map ( DP => E203_ASYNC_FF_LEVELS,
-    	                                                   DW => 1
-    	                                                 )
+    	                                                     DW => 1
+    	                                                   )
                                                 port map ( din_a(0)=> dbg_irq_a,
                                                            dout(0) => dbg_irq_r,
                                                            clk     => clk  ,
                                                            rst_n   => rst_n 
-                                                	     );
+                                                	       );
     u_ext_irq_sync: component sirv_gnrl_sync generic map ( DP => E203_ASYNC_FF_LEVELS,
-    	                                                   DW => 1
-    	                                                 )
+    	                                                     DW => 1
+    	                                                   )
                                                 port map ( din_a(0)=> ext_irq_a,
                                                            dout(0) => ext_irq_r,
                                                            clk     => clk  ,
                                                            rst_n   => rst_n 
-                                                	     );
+                                                	       );
     u_sft_irq_sync: component sirv_gnrl_sync generic map ( DP => E203_ASYNC_FF_LEVELS,
-    	                                                   DW => 1
-    	                                                 )
+    	                                                     DW => 1
+    	                                                   )
                                                 port map ( din_a(0)=> sft_irq_a,
                                                            dout(0) => sft_irq_r,
                                                            clk     => clk  ,
                                                            rst_n   => rst_n 
-                                                	     );
+                                                	       );
     u_tmr_irq_sync: component sirv_gnrl_sync generic map ( DP => E203_ASYNC_FF_LEVELS,
-    	                                                   DW => 1
-    	                                                 )
+    	                                                     DW => 1
+    	                                                   )
                                                 port map ( din_a(0)=> tmr_irq_a,
                                                            dout(0) => tmr_irq_r,
                                                            clk     => clk  ,
                                                            rst_n   => rst_n 
-                                                	     );
+                                                	       );
     `else
     ext_irq_r <= ext_irq_a;
     sft_irq_r <= sft_irq_a;

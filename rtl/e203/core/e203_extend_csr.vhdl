@@ -50,4 +50,9 @@ entity e203_extend_csr is
   );
 end e203_extend_csr;
 
+architecture impl of e203_extend_csr is 
+begin
+  nice_csr_ready <= '1';
+  nice_csr_rdata <= (32-1 downto 0 => '0');
+end impl;
 `end if
