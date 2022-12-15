@@ -39,10 +39,10 @@ entity sirv_mrom is
 end sirv_mrom;
 
 architecture impl of sirv_mrom is 
-  type mask_rom_t is array(0 to DP-1) of std_logic_vector(Dw-1 downto 0);
+  type mask_rom_t is array(0 to DP-1) of std_ulogic_vector(Dw-1 downto 0);
   signal mask_rom: mask_rom_t;
 begin
-  rom_dout <= mask_rom(to_integer(unsigned(rom_addr)));
+  rom_dout <= mask_rom(to_integer(u_unsigned(rom_addr)));
   
   -- Just jump to the ITCM base address
   jump_to_ram_gen: if (TRUE) generate

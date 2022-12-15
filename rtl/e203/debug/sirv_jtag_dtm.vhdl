@@ -65,29 +65,29 @@ architecture impl of sirv_jtag_dtm is
   constant DEBUG_VERSION:    integer:= 0;
 
   -- JTAG State Machine
-  constant TEST_LOGIC_RESET: std_logic_vector(3 downto 0):= X"0";
-  constant RUN_TEST_IDLE   : std_logic_vector(3 downto 0):= X"1";
-  constant SELECT_DR       : std_logic_vector(3 downto 0):= X"2";
-  constant CAPTURE_DR      : std_logic_vector(3 downto 0):= X"3";
-  constant SHIFT_DR        : std_logic_vector(3 downto 0):= X"4";
-  constant EXIT1_DR        : std_logic_vector(3 downto 0):= X"5";
-  constant PAUSE_DR        : std_logic_vector(3 downto 0):= X"6";
-  constant EXIT2_DR        : std_logic_vector(3 downto 0):= X"7";
-  constant UPDATE_DR       : std_logic_vector(3 downto 0):= X"8";
-  constant SELECT_IR       : std_logic_vector(3 downto 0):= X"9";
-  constant CAPTURE_IR      : std_logic_vector(3 downto 0):= X"A";
-  constant SHIFT_IR        : std_logic_vector(3 downto 0):= X"B";
-  constant EXIT1_IR        : std_logic_vector(3 downto 0):= X"C";
-  constant PAUSE_IR        : std_logic_vector(3 downto 0):= X"D";
-  constant EXIT2_IR        : std_logic_vector(3 downto 0):= X"E";
-  constant UPDATE_IR       : std_logic_vector(3 downto 0):= X"F";
+  constant TEST_LOGIC_RESET: std_ulogic_vector(3 downto 0):= X"0";
+  constant RUN_TEST_IDLE   : std_ulogic_vector(3 downto 0):= X"1";
+  constant SELECT_DR       : std_ulogic_vector(3 downto 0):= X"2";
+  constant CAPTURE_DR      : std_ulogic_vector(3 downto 0):= X"3";
+  constant SHIFT_DR        : std_ulogic_vector(3 downto 0):= X"4";
+  constant EXIT1_DR        : std_ulogic_vector(3 downto 0):= X"5";
+  constant PAUSE_DR        : std_ulogic_vector(3 downto 0):= X"6";
+  constant EXIT2_DR        : std_ulogic_vector(3 downto 0):= X"7";
+  constant UPDATE_DR       : std_ulogic_vector(3 downto 0):= X"8";
+  constant SELECT_IR       : std_ulogic_vector(3 downto 0):= X"9";
+  constant CAPTURE_IR      : std_ulogic_vector(3 downto 0):= X"A";
+  constant SHIFT_IR        : std_ulogic_vector(3 downto 0):= X"B";
+  constant EXIT1_IR        : std_ulogic_vector(3 downto 0):= X"C";
+  constant PAUSE_IR        : std_ulogic_vector(3 downto 0):= X"D";
+  constant EXIT2_IR        : std_ulogic_vector(3 downto 0):= X"E";
+  constant UPDATE_IR       : std_ulogic_vector(3 downto 0):= X"F";
   
   -- RISCV DTM Registers (see RISC-V Debug Specification)
   -- All others are treated as 'BYPASS'.
-  constant REG_BYPASS      : std_logic_vector(4 downto 0):= "11111";
-  constant REG_IDCODE      : std_logic_vector(4 downto 0):= "00001";
-  constant REG_DEBUG_ACCESS: std_logic_vector(4 downto 0):= "10001";
-  constant REG_DTM_INFO    : std_logic_vector(4 downto 0):= "10000";
+  constant REG_BYPASS      : std_ulogic_vector(4 downto 0):= "11111";
+  constant REG_IDCODE      : std_ulogic_vector(4 downto 0):= "00001";
+  constant REG_DEBUG_ACCESS: std_ulogic_vector(4 downto 0):= "10001";
+  constant REG_DTM_INFO    : std_ulogic_vector(4 downto 0):= "10000";
 
   constant DBUS_REG_BITS : integer:= DEBUG_OP_BITS + DEBUG_ADDR_BITS + DEBUG_DATA_BITS;  -- 41
   constant DBUS_REQ_BITS : integer:= DEBUG_OP_BITS + DEBUG_ADDR_BITS + DEBUG_DATA_BITS;  -- 41
@@ -95,47 +95,47 @@ architecture impl of sirv_jtag_dtm is
 
   constant SHIFT_REG_BITS: integer:=DBUS_REG_BITS;
   
-  signal i_dtm_req_valid: std_logic;
-  signal i_dtm_req_ready: std_logic;
-  signal i_dtm_req_bits:  std_logic_vector(DBUS_REQ_BITS-1 downto 0);
+  signal i_dtm_req_valid: std_ulogic;
+  signal i_dtm_req_ready: std_ulogic;
+  signal i_dtm_req_bits:  std_ulogic_vector(DBUS_REQ_BITS-1 downto 0);
   
-  signal i_dtm_resp_valid: std_logic;
-  signal i_dtm_resp_ready: std_logic;
-  signal i_dtm_resp_bits:  std_logic_vector(DBUS_RESP_BITS-1 downto 0);
+  signal i_dtm_resp_valid: std_ulogic;
+  signal i_dtm_resp_ready: std_ulogic;
+  signal i_dtm_resp_bits:  std_ulogic_vector(DBUS_RESP_BITS-1 downto 0);
 
-  signal irReg:            std_logic_vector(IR_BITS-1 downto 0);
+  signal irReg:            std_ulogic_vector(IR_BITS-1 downto 0);
   
-  signal idcode:           std_logic_vector(31 downto 0);
-  signal dtminfo:          std_logic_vector(31 downto 0);
-  signal dbusReg:          std_logic_vector(DBUS_REG_BITS-1 downto 0);
-  signal dbusValidReg:     std_logic;
+  signal idcode:           std_ulogic_vector(31 downto 0);
+  signal dtminfo:          std_ulogic_vector(31 downto 0);
+  signal dbusReg:          std_ulogic_vector(DBUS_REG_BITS-1 downto 0);
+  signal dbusValidReg:     std_ulogic;
   
-  signal jtagStateReg:     std_logic_vector(3 downto 0);
+  signal jtagStateReg:     std_ulogic_vector(3 downto 0);
   
-  signal shiftReg:         std_logic_vector(SHIFT_REG_BITS-1 downto 0);
+  signal shiftReg:         std_ulogic_vector(SHIFT_REG_BITS-1 downto 0);
 
-  signal doDbusWriteReg:   std_logic;
-  signal doDbusReadReg:    std_logic;
+  signal doDbusWriteReg:   std_ulogic;
+  signal doDbusReadReg:    std_ulogic;
 
-  signal busyReg:              std_logic;
-  signal stickyBusyReg:        std_logic;
-  signal stickyNonzeroRespReg: std_logic;
+  signal busyReg:              std_ulogic;
+  signal stickyBusyReg:        std_ulogic;
+  signal stickyNonzeroRespReg: std_ulogic;
 
-  signal skipOpReg:        std_logic; -- Skip op because we're busy.
-  signal downgradeOpReg:   std_logic; -- Downgrade op because prev. op failed.
+  signal skipOpReg:        std_ulogic; -- Skip op because we're busy.
+  signal downgradeOpReg:   std_ulogic; -- Downgrade op because prev. op failed.
   
-  signal busy:             std_logic;
-  signal nonzeroResp:      std_logic;
-  
-  signal busyResponse:     std_logic_vector(SHIFT_REG_BITS-1 downto 0);
-  signal nonbusyResponse:  std_logic_vector(SHIFT_REG_BITS-1 downto 0);
+  signal busy:             std_ulogic;
+  signal nonzeroResp:      std_ulogic;
 
-  constant debugAddrBits:  std_logic_vector(3 downto 0):= std_logic_vector(to_unsigned(DEBUG_ADDR_BITS, 4));
-  constant debugVersion:   std_logic_vector(3 downto 0):= std_logic_vector(to_unsigned(DEBUG_VERSION, 4));
-  signal dbusStatus:       std_logic_vector(1 downto 0);
-  signal dbusIdleCycles:   std_logic_vector(2 downto 0);
-  signal dbusReset:        std_logic;
-  signal dtm_resp_ornot:   std_logic;
+  signal busyResponse:     std_ulogic_vector(SHIFT_REG_BITS-1 downto 0);
+  signal nonbusyResponse:  std_ulogic_vector(SHIFT_REG_BITS-1 downto 0);
+
+  constant debugAddrBits:  std_ulogic_vector(3 downto 0):= std_logic_vector(to_unsigned(DEBUG_ADDR_BITS, 4));
+  constant debugVersion:   std_ulogic_vector(3 downto 0):= std_logic_vector(to_unsigned(DEBUG_VERSION, 4));
+  signal dbusStatus:       std_ulogic_vector(1 downto 0);
+  signal dbusIdleCycles:   std_ulogic_vector(2 downto 0);
+  signal dbusReset:        std_ulogic;
+  signal dtm_resp_ornot:   std_ulogic;
 
   component sirv_gnrl_cdc_tx is
     generic(

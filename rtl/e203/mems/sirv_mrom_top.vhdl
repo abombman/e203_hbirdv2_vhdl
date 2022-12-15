@@ -51,7 +51,7 @@ entity sirv_mrom_top is
 end sirv_mrom_top;
   
 architecture impl of sirv_mrom_top is 
-  signal rom_dout: std_logic_vector(DW-1 downto 0);
+  signal rom_dout: std_ulogic_vector(DW-1 downto 0);
 begin
   rom_icb_rsp_valid <= rom_icb_cmd_valid;
   rom_icb_cmd_ready <= rom_icb_rsp_ready;

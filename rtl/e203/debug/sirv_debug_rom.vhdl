@@ -53,10 +53,10 @@ end sirv_debug_rom;
  -- 0xe3, 0x0c, 0x04, 0xfe, 0x6f, 0xf0, 0x1f, 0xfe).map(_.toByte)
 
  architecture impl of sirv_debug_rom is 
-   type rom_addr_type is array(0 to 28) of std_logic_vector(31 downto 0); -- 29 words in total
+   type rom_addr_type is array(0 to 28) of std_ulogic_vector(31 downto 0); -- 29 words in total
    signal debug_rom: rom_addr_type;  
  begin
-   rom_dout<= debug_rom(to_integer(unsigned(rom_addr)));
+   rom_dout<= debug_rom(to_integer(u_unsigned(rom_addr)));
    
    -- 0x6f, 0x00, 0xc0, 0x03, 0x6f, 0x00, 0xc0, 0x00, 0x13, 0x04, 0xf0, 0xff,
    debug_rom( 0)(7  downto  0) <= x"6f";

@@ -41,9 +41,9 @@ entity sirv_debug_ram is
 end sirv_debug_ram;
 
 architecture impl of sirv_debug_ram is
-  type debug_ram_type is array(0 to 6) of std_logic_vector(31 downto 0);
+  type debug_ram_type is array(0 to 6) of std_ulogic_vector(31 downto 0);
   signal debug_ram_r: debug_ram_type;
-  signal ram_wen: std_logic_vector(6 downto 0);
+  signal ram_wen: std_ulogic_vector(6 downto 0);
 
   component sirv_gnrl_dfflr is
     generic( DW: integer );
@@ -56,12 +56,12 @@ architecture impl of sirv_debug_ram is
     );
   end component;
 begin
-  ram_dout <= debug_ram_r(to_integer(unsigned(ram_addr)));
+  ram_dout <= debug_ram_r(to_integer(u_unsigned(ram_addr)));
   
   debug_ram_gen: for i in 0 to 6 generate
-    signal is_addr_i: std_logic;
+    signal is_addr_i: std_ulogic;
   begin
-    is_addr_i <= '1' when to_integer(unsigned(ram_addr)) = i else
+    is_addr_i <= '1' when to_integer(u_unsigned(ram_addr)) = i else
     	         '0';
     ram_wen(i) <= ram_cs and (not ram_rd) and is_addr_i;
     ram_dfflr: component sirv_gnrl_dfflr generic map(32)

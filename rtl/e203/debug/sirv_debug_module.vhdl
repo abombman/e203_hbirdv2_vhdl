@@ -124,114 +124,114 @@ entity sirv_debug_module is
 end sirv_debug_module;  
   
 architecture impl of sirv_debug_module is 
-  signal dm_rst:       std_logic;
-  signal dm_rst_n:     std_logic;
-  signal dm_clk:       std_logic;
+  signal dm_rst:       std_ulogic;
+  signal dm_rst_n:     std_ulogic;
+  signal dm_clk:       std_ulogic;
 
-  signal jtag_TCK:     std_logic;
-  signal jtag_reset:   std_logic;
-  signal jtag_TDI:     std_logic;
-  signal jtag_TDO:     std_logic;
-  signal jtag_TMS:     std_logic;
-  signal jtag_TRST:    std_logic;
-  signal jtag_DRV_TDO: std_logic;
+  signal jtag_TCK:     std_ulogic;
+  signal jtag_reset:   std_ulogic;
+  signal jtag_TDI:     std_ulogic;
+  signal jtag_TDO:     std_ulogic;
+  signal jtag_TMS:     std_ulogic;
+  signal jtag_TRST:    std_ulogic;
+  signal jtag_DRV_TDO: std_ulogic;
 
-  signal dtm_req_valid:  std_logic;
-  signal dtm_req_ready:  std_logic;
-  signal dtm_req_bits:   std_logic_vector(41-1 downto 0);
-  signal dtm_resp_valid: std_logic;
-  signal dtm_resp_ready: std_logic;
-  signal dtm_resp_bits:  std_logic_vector(36-1 downto 0);
+  signal dtm_req_valid:  std_ulogic;
+  signal dtm_req_ready:  std_ulogic;
+  signal dtm_req_bits:   std_ulogic_vector(41-1 downto 0);
+  signal dtm_resp_valid: std_ulogic;
+  signal dtm_resp_ready: std_ulogic;
+  signal dtm_resp_bits:  std_ulogic_vector(36-1 downto 0);
 
-  signal i_dtm_req_valid:  std_logic;
-  signal i_dtm_req_ready:  std_logic;
-  signal i_dtm_req_bits:   std_logic_vector(41-1 downto 0);
-  signal i_dtm_resp_valid: std_logic;
-  signal i_dtm_resp_ready: std_logic;
-  signal i_dtm_resp_bits:  std_logic_vector(36-1 downto 0);
+  signal i_dtm_req_valid:  std_ulogic;
+  signal i_dtm_req_ready:  std_ulogic;
+  signal i_dtm_req_bits:   std_ulogic_vector(41-1 downto 0);
+  signal i_dtm_resp_valid: std_ulogic;
+  signal i_dtm_resp_ready: std_ulogic;
+  signal i_dtm_resp_bits:  std_ulogic_vector(36-1 downto 0);
   
-  signal i_dtm_req_hsked:  std_logic;
+  signal i_dtm_req_hsked:  std_ulogic;
 
-  signal dtm_req_bits_addr:  std_logic_vector( 4 downto 0);
-  signal dtm_req_bits_data:  std_logic_vector(33 downto 0);
-  signal dtm_req_bits_op:    std_logic_vector( 1 downto 0);
+  signal dtm_req_bits_addr:  std_ulogic_vector( 4 downto 0);
+  signal dtm_req_bits_data:  std_ulogic_vector(33 downto 0);
+  signal dtm_req_bits_op:    std_ulogic_vector( 1 downto 0);
 
-  signal dtm_resp_bits_data: std_logic_vector(33 downto 0);
-  signal dtm_resp_bits_resp: std_logic_vector( 1 downto 0);
+  signal dtm_resp_bits_data: std_ulogic_vector(33 downto 0);
+  signal dtm_resp_bits_resp: std_ulogic_vector( 1 downto 0);
 
-  signal dtm_req_rd:         std_logic;
-  signal dtm_req_wr:         std_logic;
+  signal dtm_req_rd:         std_ulogic;
+  signal dtm_req_wr:         std_ulogic;
 
-  signal dtm_req_sel_dbgram:   std_logic;
-  signal dtm_req_sel_dmcontrl: std_logic;
-  signal dtm_req_sel_dminfo:   std_logic;
-  signal dtm_req_sel_haltstat: std_logic;
+  signal dtm_req_sel_dbgram:   std_ulogic;
+  signal dtm_req_sel_dmcontrl: std_ulogic;
+  signal dtm_req_sel_dminfo:   std_ulogic;
+  signal dtm_req_sel_haltstat: std_ulogic;
 
-  signal dminfo_r:             std_logic_vector(33 downto 0);
-  signal dmcontrol_r:          std_logic_vector(33 downto 0);
+  signal dminfo_r:             std_ulogic_vector(33 downto 0);
+  signal dmcontrol_r:          std_ulogic_vector(33 downto 0);
 
-  signal dm_haltnot_r:         std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_debint_r:          std_logic_vector(HART_NUM-1 downto 0);
+  signal dm_haltnot_r:         std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_debint_r:          std_ulogic_vector(HART_NUM-1 downto 0);
 
-  signal ram_dout:             std_logic_vector(31 downto 0);
+  signal ram_dout:             std_ulogic_vector(31 downto 0);
 
-  signal icb_access_dbgram_ena:std_logic;
-  signal i_dtm_req_condi:      std_logic;
+  signal icb_access_dbgram_ena:std_ulogic;
+  signal i_dtm_req_condi:      std_ulogic;
 
-  signal dm_hartid_r:          std_logic_vector(HART_ID_W-1 downto 0);
-  signal dm_debint_arr:        std_logic_vector(1 downto 0);
-  signal dm_haltnot_arr:       std_logic_vector(1 downto 0);
+  signal dm_hartid_r:          std_ulogic_vector(HART_ID_W-1 downto 0);
+  signal dm_debint_arr:        std_ulogic_vector(1 downto 0);
+  signal dm_haltnot_arr:       std_ulogic_vector(1 downto 0);
   
-  signal dtm_wr_dmcontrol:     std_logic;
-  signal dtm_wr_dbgram:        std_logic;
+  signal dtm_wr_dmcontrol:     std_ulogic;
+  signal dtm_wr_dbgram:        std_ulogic;
   
-  signal dtm_wr_interrupt_ena: std_logic;
-  signal dtm_wr_haltnot_ena:   std_logic;
-  signal dtm_wr_hartid_ena:    std_logic;
-  signal dtm_wr_dbgram_ena:    std_logic;
+  signal dtm_wr_interrupt_ena: std_ulogic;
+  signal dtm_wr_haltnot_ena:   std_ulogic;
+  signal dtm_wr_hartid_ena:    std_ulogic;
+  signal dtm_wr_dbgram_ena:    std_ulogic;
 
-  signal dtm_access_dbgram_ena:std_logic;
+  signal dtm_access_dbgram_ena:std_ulogic;
 
-  signal dm_hartid_ena:        std_logic;
-  signal dm_hartid_nxt:        std_logic_vector(HART_ID_W-1 downto 0);
+  signal dm_hartid_ena:        std_ulogic;
+  signal dm_hartid_nxt:        std_ulogic_vector(HART_ID_W-1 downto 0);
 
-  signal i_icb_cmd_hsked:      std_logic;
-  signal icb_wr_ena:           std_logic;
-  signal icb_sel_cleardebint:  std_logic;
-  signal icb_sel_sethaltnot:   std_logic;
-  signal icb_sel_dbgrom:       std_logic;
-  signal icb_sel_dbgram:       std_logic;
+  signal i_icb_cmd_hsked:      std_ulogic;
+  signal icb_wr_ena:           std_ulogic;
+  signal icb_sel_cleardebint:  std_ulogic;
+  signal icb_sel_sethaltnot:   std_ulogic;
+  signal icb_sel_dbgrom:       std_ulogic;
+  signal icb_sel_dbgram:       std_ulogic;
   
-  signal icb_wr_cleardebint_ena: std_logic;
-  signal icb_wr_sethaltnot_ena:  std_logic;
+  signal icb_wr_cleardebint_ena: std_ulogic;
+  signal icb_wr_sethaltnot_ena:  std_ulogic;
+
+  signal cleardebint_ena:        std_ulogic;
+  signal cleardebint_r:          std_ulogic_vector(HART_ID_W-1 downto 0);
+  signal cleardebint_nxt:        std_ulogic_vector(HART_ID_W-1 downto 0);
+
+  signal sethaltnot_ena:         std_ulogic;
+  signal sethaltnot_r:           std_ulogic_vector(HART_ID_W-1 downto 0);
+  signal sethaltnot_nxt:         std_ulogic_vector(HART_ID_W-1 downto 0);
+
+  signal rom_dout:               std_ulogic_vector(31 downto 0);
+
+  signal ram_cs:                 std_ulogic;
+  signal ram_addr:               std_ulogic_vector(3-1 downto 0);
+  signal ram_rd:                 std_ulogic;
+  signal ram_wdat:               std_ulogic_vector(32-1 downto 0);
+
+  signal dm_haltnot_set:         std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_haltnot_clr:         std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_haltnot_ena:         std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_haltnot_nxt:         std_ulogic_vector(HART_NUM-1 downto 0);
   
-  signal cleardebint_ena:        std_logic;
-  signal cleardebint_r:          std_logic_vector(HART_ID_W-1 downto 0);
-  signal cleardebint_nxt:        std_logic_vector(HART_ID_W-1 downto 0);
+  signal i_icb_cmd_wdata_comp:   std_ulogic;
+  signal dm_hartid_r_comp:       std_ulogic;
 
-  signal sethaltnot_ena:         std_logic;
-  signal sethaltnot_r:           std_logic_vector(HART_ID_W-1 downto 0);
-  signal sethaltnot_nxt:         std_logic_vector(HART_ID_W-1 downto 0);
-
-  signal rom_dout:               std_logic_vector(31 downto 0);
-
-  signal ram_cs:                 std_logic;
-  signal ram_addr:               std_logic_vector(3-1 downto 0);
-  signal ram_rd:                 std_logic;
-  signal ram_wdat:               std_logic_vector(32-1 downto 0);
-
-  signal dm_haltnot_set:         std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_haltnot_clr:         std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_haltnot_ena:         std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_haltnot_nxt:         std_logic_vector(HART_NUM-1 downto 0);
-  
-  signal i_icb_cmd_wdata_comp:   std_logic;
-  signal dm_hartid_r_comp:       std_logic;
-
-  signal dm_debint_set:          std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_debint_clr:          std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_debint_ena:          std_logic_vector(HART_NUM-1 downto 0);
-  signal dm_debint_nxt:          std_logic_vector(HART_NUM-1 downto 0);
+  signal dm_debint_set:          std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_debint_clr:          std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_debint_ena:          std_ulogic_vector(HART_NUM-1 downto 0);
+  signal dm_debint_nxt:          std_ulogic_vector(HART_NUM-1 downto 0);
   
   component sirv_ResetCatchAndSync_2 is 
   port( clock:          in std_logic;
@@ -644,8 +644,8 @@ begin
 
   dm_debint_arr             <= ('0', dm_debint_r );
   dm_haltnot_arr            <= ('0', dm_haltnot_r);
-  dmcontrol_r(33)           <= dm_debint_arr (to_integer(unsigned(dm_hartid_r)));
-  dmcontrol_r(32)           <= dm_haltnot_arr(to_integer(unsigned(dm_hartid_r)));
+  dmcontrol_r(33)           <= dm_debint_arr (to_integer(u_unsigned(dm_hartid_r)));
+  dmcontrol_r(32)           <= dm_haltnot_arr(to_integer(u_unsigned(dm_hartid_r)));
   dmcontrol_r(31 downto 12) <= 20b"0";
   dmcontrol_r(11 downto 2)  <= ((10-HART_ID_W-1 downto 0 => '0'), dm_hartid_r);
   dmcontrol_r(1 downto 0)   <= "00";
@@ -724,8 +724,8 @@ begin
                                                       );
 
   dm_halt_int_gen: for i in 0 to HART_NUM-1 generate 
-    i_icb_cmd_wdata_comp <= '1' when to_integer(unsigned(i_icb_cmd_wdata(HART_ID_W-1 downto 0))) = i else '0';
-    dm_hartid_r_comp     <= '1' when to_integer(unsigned(dm_hartid_r)) = i else '0';
+    i_icb_cmd_wdata_comp <= '1' when to_integer(u_unsigned(i_icb_cmd_wdata(HART_ID_W-1 downto 0))) = i else '0';
+    dm_hartid_r_comp     <= '1' when to_integer(u_unsigned(dm_hartid_r)) = i else '0';
     
     -- The haltnot will be set by system bus set its ID to sethaltnot_r
     dm_haltnot_set(i) <= icb_wr_sethaltnot_ena and i_icb_cmd_wdata_comp;

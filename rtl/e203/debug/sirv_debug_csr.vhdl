@@ -62,35 +62,35 @@ entity sirv_debug_csr is
 end sirv_debug_csr;
 
 architecture impl of sirv_debug_csr is 
-  signal dpc_ena: std_logic;
-  signal dpc_nxt: std_logic_vector(PC_SIZE-1 downto 0);
+  signal dpc_ena: std_ulogic;
+  signal dpc_nxt: std_ulogic_vector(PC_SIZE-1 downto 0);
   
-  signal dscratch_ena: std_logic;
-  signal dscratch_nxt: std_logic_vector(32-1 downto 0);
+  signal dscratch_ena: std_ulogic;
+  signal dscratch_nxt: std_ulogic_vector(32-1 downto 0);
 
-  signal ndreset_ena: std_logic;
-  signal ndreset_nxt: std_logic_vector(1-1 downto 0);
-  signal ndreset_r:   std_logic_vector(1-1 downto 0);
+  signal ndreset_ena: std_ulogic;
+  signal ndreset_nxt: std_ulogic_vector(1-1 downto 0);
+  signal ndreset_r:   std_ulogic_vector(1-1 downto 0);
 
-  signal fullreset_ena: std_logic;
-  signal fullreset_nxt: std_logic_vector(1-1 downto 0);
-  signal fullreset_r:   std_logic_vector(1-1 downto 0);
+  signal fullreset_ena: std_ulogic;
+  signal fullreset_nxt: std_ulogic_vector(1-1 downto 0);
+  signal fullreset_r:   std_ulogic_vector(1-1 downto 0);
 
-  signal dcause_ena: std_logic;
-  signal dcause_nxt: std_logic_vector(3-1 downto 0);
-  signal dcause_r:   std_logic_vector(3-1 downto 0);
+  signal dcause_ena: std_ulogic;
+  signal dcause_nxt: std_ulogic_vector(3-1 downto 0);
+  signal dcause_r:   std_ulogic_vector(3-1 downto 0);
 
-  signal halt_ena: std_logic;
-  signal halt_nxt: std_logic_vector(1-1 downto 0);
-  signal halt_r:   std_logic_vector(1-1 downto 0);
+  signal halt_ena: std_ulogic;
+  signal halt_nxt: std_ulogic_vector(1-1 downto 0);
+  signal halt_r:   std_ulogic_vector(1-1 downto 0);
 
-  signal step_ena: std_logic;
-  signal step_nxt: std_logic_vector(1-1 downto 0);
-  signal step_r:   std_logic_vector(1-1 downto 0);
+  signal step_ena: std_ulogic;
+  signal step_nxt: std_ulogic_vector(1-1 downto 0);
+  signal step_r:   std_ulogic_vector(1-1 downto 0);
 
-  signal ebreakm_ena: std_logic;
-  signal ebreakm_nxt: std_logic_vector(1-1 downto 0);
-  signal ebreakm_r:   std_logic_vector(1-1 downto 0);
+  signal ebreakm_ena: std_ulogic;
+  signal ebreakm_nxt: std_ulogic_vector(1-1 downto 0);
+  signal ebreakm_r:   std_ulogic_vector(1-1 downto 0);
 
   component sirv_gnrl_dfflr is
     generic( DW: integer );
