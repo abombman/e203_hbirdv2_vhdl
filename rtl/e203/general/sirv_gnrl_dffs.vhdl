@@ -41,8 +41,8 @@ entity sirv_gnrl_dfflrs is
 end sirv_gnrl_dfflrs;
 
 architecture impl_better of sirv_gnrl_dfflrs is         -- Reset Asynchronous
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
-  signal d_load : std_logic_vector( DW-1 downto 0 );
+  signal qout_r : std_ulogic_vector( DW-1 downto 0 );
+  signal d_load : std_ulogic_vector( DW-1 downto 0 );
 begin
   d_load<= dnxt when lden = '1' else
            qout_r;
@@ -59,9 +59,9 @@ begin
 end impl_better;
 
 -- architecture impl_r_sync1 of sirv_gnrl_dfflrs is        -- Reset Synchronous
---   signal din_r  : std_logic_vector( DW-1 downto 0 );
---   signal dload  : std_logic_vector( DW-1 downto 0 );
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal din_r  : std_ulogic_vector( DW-1 downto 0 );
+--   signal dload  : std_ulogic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 --   
 -- begin
 --   dload<= dnxt when lden = '1' else
@@ -79,9 +79,9 @@ end impl_better;
 -- end impl_r_sync1;
 -- 
 -- architecture impl_r_sync2 of sirv_gnrl_dfflrs is        -- Reset Synchronous
---   signal din_r  : std_logic_vector( DW-1 downto 0 );
---   signal dload  : std_logic_vector( DW-1 downto 0 );
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal din_r  : std_ulogic_vector( DW-1 downto 0 );
+--   signal dload  : std_ulogic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 --   
 -- begin
 --   din_r<= (others=> '1') when rst_n = '0' else
@@ -99,8 +99,8 @@ end impl_better;
 -- end impl_r_sync2;
 -- 
 -- architecture impl_wrong of sirv_gnrl_dfflrs is          -- Reset Asynchronous
---   signal d_load : std_logic_vector( DW-1 downto 0 );
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal d_load : std_ulogic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 -- begin
 --   d_load<= dnxt when lden = '1' else
 --           qout_r;
@@ -137,8 +137,8 @@ entity sirv_gnrl_dfflr is
 end sirv_gnrl_dfflr;
 
 architecture impl_better of sirv_gnrl_dfflr is         -- Reset Asynchronous
-  signal d_load : std_logic_vector( DW-1 downto 0 );
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
+  signal d_load : std_ulogic_vector( DW-1 downto 0 );
+  signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 begin
   d_load<= dnxt when lden = '1' else
            qout_r;
@@ -153,8 +153,8 @@ begin
 end impl_better;
 
 -- architecture impl_wrong of sirv_gnrl_dfflr is          -- Reset Asynchronous
---   signal d_load : std_logic_vector( DW-1 downto 0 );
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal d_load : std_ulogic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 -- begin
 --   d_load<= dnxt when lden = '1' else
 --           qout_r;
@@ -187,8 +187,8 @@ entity sirv_gnrl_dffl is
 end sirv_gnrl_dffl;
 
 architecture impl of sirv_gnrl_dffl is
-  signal d_load : std_logic_vector( DW-1 downto 0 );
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
+  signal d_load : std_ulogic_vector( DW-1 downto 0 );
+  signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 begin
   d_load<= dnxt when lden = '1' else
           qout_r;
@@ -247,7 +247,7 @@ end impl_better;
 -- end impl_r_sync;
 -- 
 -- architecture impl_wrong of sirv_gnrl_dffrs is           -- Reset Asynchronous
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 -- begin
 --   process(clk) begin 
 --     if rising_edge(clk) then    
@@ -305,7 +305,7 @@ end impl_better;
 -- end impl_r_sync;
 -- 
 -- architecture impl_wrong of sirv_gnrl_dffr is            -- Reset Asynchronous
---   signal qout_r : std_logic_vector( DW-1 downto 0 );
+--   signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 -- begin
 --   process(clk) begin 
 --     if rising_edge(clk) then    
@@ -335,7 +335,7 @@ entity sirv_gnrl_ltch is
 end sirv_gnrl_ltch;
 
 architecture impl of sirv_gnrl_ltch is
-  signal qout_r : std_logic_vector( DW-1 downto 0 );
+  signal qout_r : std_ulogic_vector( DW-1 downto 0 );
 begin
   process (all) begin
     if lden = '1' then

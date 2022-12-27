@@ -79,11 +79,11 @@ begin
   end generate;
 
   dp_gt_0: if DP > 0 generate
-    signal vld_set: std_logic;
-    signal vld_clr: std_logic;
-    signal vld_ena: std_logic;
-    signal vld_r:   std_logic;
-    signal vld_nxt: std_logic;
+    signal vld_set: std_ulogic;
+    signal vld_clr: std_ulogic;
+    signal vld_ena: std_ulogic;
+    signal vld_r:   std_ulogic;
+    signal vld_nxt: std_ulogic;
   begin
     -- The valid will be set when input handshaked
     vld_set <= i_vld and i_rdy;
@@ -119,8 +119,7 @@ end impl;
 --
 -- Description:
 --  Syncer to taking asynchronous signal to synced signal as general module
---  濠电姰鍨奸崺鏍儗椤斿墽绀婇柛娑樼摠閻撳倿骞栧ǎ顒€鈧牜绮ｅΔ鍛厱婵﹩鍓氬﹢鐗堛亜閹烘柨浠辩€规洘濞婇垾锕傚箳閺冨偆妲稤P濠电偞鍨堕幑鍥涢崘顔藉亹闁绘垶顭囧▓銈嗙箾閹寸偞灏ㄩ柛瀣尭闇夋繝濠傚閸犳洜绱
--- ===========================================================================
+
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -150,7 +149,7 @@ architecture impl of sirv_gnrl_sync is
   end component;
   --subtype Data_Word is std_logic_vector range (DW-1) downto 0;            -- Wrong defination
   --type sync_dat_type is array(DP-1 downto 0, DW-1 downto 0) of std_logic; -- Right but two dimentional array type can't be use as single raw type or column type seperately
-  type sync_dat_type is array( DP-1 downto 0 ) of std_logic_vector( DW-1 downto 0 );
+  type sync_dat_type is array( DP-1 downto 0 ) of std_ulogic_vector( DW-1 downto 0 );
   signal sync_dat: sync_dat_type;
 begin
   sync_gen: for i in 0 to (DP-1) generate
@@ -239,22 +238,22 @@ architecture impl of sirv_gnrl_cdc_rx is
     );
   end component;
 
-  signal i_vld_sync:       std_logic;
-  signal i_vld_sync_r:     std_logic;
-  signal i_vld_sync_nedge: std_logic;
-  signal buf_rdy:          std_logic;
-  signal i_rdy_r:          std_logic;
-  signal i_rdy_set:        std_logic;
-  signal i_rdy_clr:        std_logic;
-  signal i_rdy_ena:        std_logic;
-  signal i_rdy_nxt:        std_logic;
-  signal buf_vld_r:        std_logic;
-  signal buf_dat_r:        std_logic_vector( DW-1 downto 0 );
-  signal buf_dat_ena:      std_logic;
-  signal buf_vld_set:      std_logic;
-  signal buf_vld_clr:      std_logic;
-  signal buf_vld_ena:      std_logic;
-  signal buf_vld_nxt:      std_logic;
+  signal i_vld_sync:       std_ulogic;
+  signal i_vld_sync_r:     std_ulogic;
+  signal i_vld_sync_nedge: std_ulogic;
+  signal buf_rdy:          std_ulogic;
+  signal i_rdy_r:          std_ulogic;
+  signal i_rdy_set:        std_ulogic;
+  signal i_rdy_clr:        std_ulogic;
+  signal i_rdy_ena:        std_ulogic;
+  signal i_rdy_nxt:        std_ulogic;
+  signal buf_vld_r:        std_ulogic;
+  signal buf_dat_r:        std_ulogic_vector( DW-1 downto 0 );
+  signal buf_dat_ena:      std_ulogic;
+  signal buf_vld_set:      std_ulogic;
+  signal buf_vld_clr:      std_ulogic;
+  signal buf_vld_ena:      std_ulogic;
+  signal buf_vld_nxt:      std_ulogic;
 
 begin
   u_i_vld_sync:    component sirv_gnrl_sync 
@@ -378,22 +377,22 @@ architecture impl of sirv_gnrl_cdc_tx is
     );
     end component;
 
-  signal o_rdy_sync:       std_logic;
-  signal vld_r:            std_logic;
-  signal dat_r:            std_logic_vector( DW-1 downto 0 );
-  signal vld_set:          std_logic;
-  signal vld_clr:          std_logic;
-  signal vld_ena:          std_logic;
-  signal vld_nxt:          std_logic;
-  signal o_rdy_sync_r:     std_logic;
-  signal o_rdy_nedge:      std_logic;
-  signal nrdy_r:           std_logic;
-  signal nrdy_set:         std_logic;
-  signal nrdy_clr:         std_logic;
-  signal nrdy_ena:         std_logic;
-  signal nrdy_nxt:         std_logic;--
-  signal buf_vld_ena:      std_logic;
-  signal buf_vld_nxt:      std_logic;
+  signal o_rdy_sync:       std_ulogic;
+  signal vld_r:            std_ulogic;
+  signal dat_r:            std_ulogic_vector( DW-1 downto 0 );
+  signal vld_set:          std_ulogic;
+  signal vld_clr:          std_ulogic;
+  signal vld_ena:          std_ulogic;
+  signal vld_nxt:          std_ulogic;
+  signal o_rdy_sync_r:     std_ulogic;
+  signal o_rdy_nedge:      std_ulogic;
+  signal nrdy_r:           std_ulogic;
+  signal nrdy_set:         std_ulogic;
+  signal nrdy_clr:         std_ulogic;
+  signal nrdy_ena:         std_ulogic;
+  signal nrdy_nxt:         std_ulogic;
+  signal buf_vld_ena:      std_ulogic;
+  signal buf_vld_nxt:      std_ulogic;
   begin
     u_o_rdy_sync:  component sirv_gnrl_sync 
                    generic map(SYNC_DP, 1) 
@@ -469,15 +468,15 @@ entity sirv_gnrl_bypbuf is
 end sirv_gnrl_bypbuf;
 
 architecture impl of sirv_gnrl_bypbuf is 
-  signal fifo_i_vld: std_logic;
-  signal fifo_i_rdy: std_logic;
-  signal fifo_i_dat: std_logic_vector( DW-1 downto 0 );
+  signal fifo_i_vld: std_ulogic;
+  signal fifo_i_rdy: std_ulogic;
+  signal fifo_i_dat: std_ulogic_vector( DW-1 downto 0 );
  
-  signal fifo_o_vld: std_logic;
-  signal fifo_o_rdy: std_logic;
-  signal fifo_o_dat: std_logic_vector( DW-1 downto 0 );
+  signal fifo_o_vld: std_ulogic;
+  signal fifo_o_rdy: std_ulogic;
+  signal fifo_o_dat: std_ulogic_vector( DW-1 downto 0 );
  
-  signal byp:        std_logic;
+  signal byp:        std_ulogic;
 
   component sirv_gnrl_fifo is
   generic(
@@ -577,26 +576,26 @@ begin
   end generate;
 
   dp_gt0: if DP > 0 generate 
-    type fifo_type is array( DP-1 downto 0 ) of std_logic_vector( DW-1 downto 0 );
+    type fifo_type is array( DP-1 downto 0 ) of std_ulogic_vector( DW-1 downto 0 );
     --  FIFO registers
     signal fifo_rf_r: fifo_type;
-    signal fifo_rf_en: std_logic_vector(DP-1 downto 0);
-    signal wen: std_logic;
-    signal ren: std_logic;
+    signal fifo_rf_en: std_ulogic_vector(DP-1 downto 0);
+    signal wen: std_ulogic;
+    signal ren: std_ulogic;
     
     --  Read-Pointer and Write-Pointer
-    signal rptr_vec_nxt: std_logic_vector(DP-1 downto 0);
-    signal rptr_vec_r:   std_logic_vector(DP-1 downto 0);
-    signal wptr_vec_nxt: std_logic_vector(DP-1 downto 0);
-    signal wptr_vec_r:   std_logic_vector(DP-1 downto 0);
+    signal rptr_vec_nxt: std_ulogic_vector(DP-1 downto 0);
+    signal rptr_vec_r:   std_ulogic_vector(DP-1 downto 0);
+    signal wptr_vec_nxt: std_ulogic_vector(DP-1 downto 0);
+    signal wptr_vec_r:   std_ulogic_vector(DP-1 downto 0);
 
-    signal i_vec:        std_logic_vector(DP downto 0);
-    signal o_vec:        std_logic_vector(DP downto 0);
-    signal vec_nxt:      std_logic_vector(DP downto 0);
-    signal vec_r:        std_logic_vector(DP downto 0);
-    signal vec_en:       std_logic;
+    signal i_vec:        std_ulogic_vector(DP downto 0);
+    signal o_vec:        std_ulogic_vector(DP downto 0);
+    signal vec_nxt:      std_ulogic_vector(DP downto 0);
+    signal vec_r:        std_ulogic_vector(DP downto 0);
+    signal vec_en:       std_ulogic;
 
-    signal mux_rdat:     std_logic_vector(DW-1 downto 0):= (others=> '0');
+    signal mux_rdat:     std_ulogic_vector(DW-1 downto 0):= (others=> '0');
 
     component sirv_gnrl_dfflrs is
     generic( DW: integer );
@@ -703,7 +702,7 @@ begin
     
     --  One-Hot Mux as the read path
     rd_port_PROC: process(all) is
-      variable tmp: std_logic_vector(DW-1 downto 0):= (others=> '0');
+      variable tmp: std_ulogic_vector(DW-1 downto 0):= (others=> '0');
     begin
       for j in 0 to (DP-1) loop
         tmp := tmp or ( (DW-1 downto 0=> rptr_vec_r(j)) and fifo_rf_r(j) );

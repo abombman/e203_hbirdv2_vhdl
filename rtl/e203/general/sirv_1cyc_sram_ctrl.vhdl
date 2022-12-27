@@ -96,7 +96,7 @@ architecture impl of sirv_1cyc_sram_ctrl is
   );
   end component;
 
-  signal ram_clk_en: std_logic;
+  signal ram_clk_en: std_ulogic;
 begin
   u_e1_stage: component sirv_gnrl_pipe_stage generic map ( CUT_READY => 0,
                                                            DP        => 1,

@@ -47,12 +47,12 @@ end sirv_sim_ram;
 
 
 architecture impl of sirv_sim_ram is
-  type mem_type is array (0 to DP-1) of std_logic_vector(DW-1 downto 0);
+  type mem_type is array (0 to DP-1) of std_ulogic_vector(DW-1 downto 0);
   signal mem_r:    mem_type;
-  signal addr_r:   unsigned(AW-1 downto 0);
-  signal wen:      std_logic_vector(MW-1 downto 0);
-  signal ren:      std_logic;
-  signal dout_pre: std_logic_vector(DW-1 downto 0);
+  signal addr_r:   u_unsigned(AW-1 downto 0);
+  signal wen:      std_ulogic_vector(MW-1 downto 0);
+  signal ren:      std_ulogic;
+  signal dout_pre: std_ulogic_vector(DW-1 downto 0);
 begin
   ren <= cs and (not we);
   wen <= (MW-1 downto 0 => (cs and we)) and wem;
@@ -61,7 +61,7 @@ begin
   begin
     if rising_edge(clk) then
       if ren = '1' then
-        addr_r<= unsigned(addr);
+        addr_r<= u_unsigned(addr);
       end if;
     end if;  	
   end process; 
@@ -73,7 +73,7 @@ begin
       begin
         if rising_edge(clk) then
           if wen(i) = '1' then
-            mem_r(to_integer(unsigned(addr)))((DW-1) downto (8*i))<= din((8*i+7) downto (8*i));
+            mem_r(to_integer(u_unsigned(addr)))((DW-1) downto (8*i))<= din((8*i+7) downto (8*i));
           end if;
         end if;
       end process;
@@ -83,14 +83,14 @@ begin
       begin
         if rising_edge(clk) then
           if wen(i) = '1' then
-            mem_r(to_integer(unsigned(addr)))((8*i+7) downto (8*i))<= din((8*i+7) downto (8*i));
+            mem_r(to_integer(u_unsigned(addr)))((8*i+7) downto (8*i))<= din((8*i+7) downto (8*i));
           end if;
         end if;
       end process;
     end generate;
   end generate;
 
-  dout_pre <= mem_r(to_integer(unsigned(addr_r)));
+  dout_pre <= mem_r(to_integer(u_unsigned(addr_r)));
 
   force_x_to_zero: if (FORCE_X2ZERO = 1) generate
     force_x_gen: for i in 0 to DW-1 generate

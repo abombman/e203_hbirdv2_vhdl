@@ -100,17 +100,17 @@ entity sirv_gnrl_icb_arbt is
 end sirv_gnrl_icb_arbt;
 
 architecture impl of sirv_gnrl_icb_arbt is 
-  type ARBT_VEC_1     is array (ARBT_NUM-1 downto 0) of std_logic_vector(1-1 downto 0)    ;
-  type ARBT_VEC_2     is array (ARBT_NUM-1 downto 0) of std_logic_vector(2-1 downto 0)    ;
-  type ARBT_VEC_AW    is array (ARBT_NUM-1 downto 0) of std_logic_vector(AW-1 downto 0)   ;
-  type ARBT_VEC_DW    is array (ARBT_NUM-1 downto 0) of std_logic_vector(DW-1 downto 0)   ;
-  type ARBT_VEC_DW_8  is array (ARBT_NUM-1 downto 0) of std_logic_vector(DW/8-1 downto 0) ;
-  type ARBT_VEC_USR_W is array (ARBT_NUM-1 downto 0) of std_logic_vector(USR_W-1 downto 0);
+  type ARBT_VEC_1     is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(1-1 downto 0)    ;
+  type ARBT_VEC_2     is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(2-1 downto 0)    ;
+  type ARBT_VEC_AW    is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(AW-1 downto 0)   ;
+  type ARBT_VEC_DW    is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(DW-1 downto 0)   ;
+  type ARBT_VEC_DW_8  is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(DW/8-1 downto 0) ;
+  type ARBT_VEC_USR_W is array (ARBT_NUM-1 downto 0) of std_ulogic_vector(USR_W-1 downto 0);
   
-  signal i_bus_icb_cmd_grt_vec: std_logic_vector(ARBT_NUM-1 downto 0);
-  signal i_bus_icb_cmd_sel:     std_logic_vector(ARBT_NUM-1 downto 0);
-  signal o_icb_cmd_valid_real:  std_logic;
-  signal o_icb_cmd_ready_real:  std_logic;
+  signal i_bus_icb_cmd_grt_vec: std_ulogic_vector(ARBT_NUM-1 downto 0);
+  signal i_bus_icb_cmd_sel:     std_ulogic_vector(ARBT_NUM-1 downto 0);
+  signal o_icb_cmd_valid_real:  std_ulogic;
+  signal o_icb_cmd_ready_real:  std_ulogic;
   
   signal i_icb_cmd_read:  ARBT_VEC_1;
   signal i_icb_cmd_addr:  ARBT_VEC_AW;
@@ -123,46 +123,46 @@ architecture impl of sirv_gnrl_icb_arbt is
   signal i_icb_cmd_size:  ARBT_VEC_2;
   signal i_icb_cmd_usr:   ARBT_VEC_USR_W;
 
-  signal sel_o_icb_cmd_read:  std_logic_vector(1-1 downto 0);
-  signal sel_o_icb_cmd_addr:  std_logic_vector(AW-1 downto 0);
-  signal sel_o_icb_cmd_wdata: std_logic_vector(DW-1 downto 0);
-  signal sel_o_icb_cmd_wmask: std_logic_vector(DW/8-1 downto 0);
-  signal sel_o_icb_cmd_burst: std_logic_vector(2-1 downto 0);
-  signal sel_o_icb_cmd_beat:  std_logic_vector(2-1 downto 0);
-  signal sel_o_icb_cmd_lock:  std_logic_vector(1-1 downto 0);
-  signal sel_o_icb_cmd_excl:  std_logic_vector(1-1 downto 0);
-  signal sel_o_icb_cmd_size:  std_logic_vector(2-1 downto 0);
-  signal sel_o_icb_cmd_usr:   std_logic_vector(USR_W-1 downto 0);
+  signal sel_o_icb_cmd_read:  std_ulogic_vector(1-1 downto 0);
+  signal sel_o_icb_cmd_addr:  std_ulogic_vector(AW-1 downto 0);
+  signal sel_o_icb_cmd_wdata: std_ulogic_vector(DW-1 downto 0);
+  signal sel_o_icb_cmd_wmask: std_ulogic_vector(DW/8-1 downto 0);
+  signal sel_o_icb_cmd_burst: std_ulogic_vector(2-1 downto 0);
+  signal sel_o_icb_cmd_beat:  std_ulogic_vector(2-1 downto 0);
+  signal sel_o_icb_cmd_lock:  std_ulogic_vector(1-1 downto 0);
+  signal sel_o_icb_cmd_excl:  std_ulogic_vector(1-1 downto 0);
+  signal sel_o_icb_cmd_size:  std_ulogic_vector(2-1 downto 0);
+  signal sel_o_icb_cmd_usr:   std_ulogic_vector(USR_W-1 downto 0);
 
-  signal o_icb_rsp_ready_pre: std_logic;
-  signal o_icb_rsp_valid_pre: std_logic;
+  signal o_icb_rsp_ready_pre: std_ulogic;
+  signal o_icb_rsp_valid_pre: std_ulogic;
   
-  signal rspid_fifo_bypass:   std_logic;
-  signal rspid_fifo_wen:      std_logic;
-  signal rspid_fifo_ren:      std_logic;
+  signal rspid_fifo_bypass:   std_ulogic;
+  signal rspid_fifo_wen:      std_ulogic;
+  signal rspid_fifo_ren:      std_ulogic;
 
-  signal i_icb_rsp_port_id:   std_logic_vector(ARBT_PTR_W-1 downto 0);
+  signal i_icb_rsp_port_id:   std_ulogic_vector(ARBT_PTR_W-1 downto 0);
   
-  signal rspid_fifo_i_valid:  std_logic;
-  signal rspid_fifo_o_valid:  std_logic;
-  signal rspid_fifo_i_ready:  std_logic;
-  signal rspid_fifo_o_ready:  std_logic;
+  signal rspid_fifo_i_valid:  std_ulogic;
+  signal rspid_fifo_o_valid:  std_ulogic;
+  signal rspid_fifo_i_ready:  std_ulogic;
+  signal rspid_fifo_o_ready:  std_ulogic;
 
-  signal rspid_fifo_rdat:     std_logic_vector(ARBT_PTR_W-1 downto 0);
-  signal rspid_fifo_wdat:     std_logic_vector(ARBT_PTR_W-1 downto 0);
+  signal rspid_fifo_rdat:     std_ulogic_vector(ARBT_PTR_W-1 downto 0);
+  signal rspid_fifo_wdat:     std_ulogic_vector(ARBT_PTR_W-1 downto 0);
 
-  signal rspid_fifo_full:     std_logic;
-  signal rspid_fifo_empty:    std_logic;
-  signal i_arbt_indic_id:     std_logic_vector(ARBT_PTR_W-1 downto 0);
+  signal rspid_fifo_full:     std_ulogic;
+  signal rspid_fifo_empty:    std_ulogic;
+  signal i_arbt_indic_id:     std_ulogic_vector(ARBT_PTR_W-1 downto 0);
   
   
 
-  signal i_icb_cmd_ready_pre: std_logic;
-  signal i_icb_cmd_valid_pre: std_logic;
+  signal i_icb_cmd_ready_pre: std_ulogic;
+  signal i_icb_cmd_valid_pre: std_ulogic;
   
-  signal arbt_ena:            std_logic;
+  signal arbt_ena:            std_ulogic;
 
-  signal o_icb_rsp_port_id:   std_logic_vector(ARBT_PTR_W-1 downto 0);
+  signal o_icb_rsp_port_id:   std_ulogic_vector(ARBT_PTR_W-1 downto 0);
   component sirv_gnrl_rrobin
     generic(ARBT_NUM: integer
     );
@@ -237,7 +237,7 @@ begin
     -- Distract the icb from the bus declared ports
 
     icb_distract_gen: for i in 0 to (ARBT_NUM-1) generate
-      signal id_compare: std_logic;
+      signal id_compare: std_ulogic;
     begin
       i_icb_cmd_read (i) <= i_bus_icb_cmd_read ( (i+1)*1     -1 downto i*1      );
       i_icb_cmd_addr (i) <= i_bus_icb_cmd_addr ( (i+1)*AW    -1 downto i*AW     );
@@ -251,12 +251,12 @@ begin
       i_icb_cmd_usr  (i) <= i_bus_icb_cmd_usr  ( (i+1)*USR_W -1 downto i*USR_W  );
 
       i_bus_icb_cmd_ready(i) <= i_bus_icb_cmd_grt_vec(i) and o_icb_cmd_ready_real;
-      -- i_bus_icb_rsp_valid(i) <= o_icb_rsp_valid_pre and ((unsigned(o_icb_rsp_port_id)) ?= i); 
+      -- i_bus_icb_rsp_valid(i) <= o_icb_rsp_valid_pre and ((u_unsigned(o_icb_rsp_port_id)) ?= i); 
       -- get VHDL warning at numeric_std_vhdl2008.vhd(4554): 
       -- equality comparison of non constant with static metalogical value is always evaluated 'false' ;
       -- may cause simulation-synthesis differences
       -- rewrite below
-      id_compare             <= '1' when to_integer(unsigned(o_icb_rsp_port_id)) = i else
+      id_compare             <= '1' when to_integer(u_unsigned(o_icb_rsp_port_id)) = i else
                                 '0';
       i_bus_icb_rsp_valid(i) <= i_bus_icb_cmd_grt_vec(i) and id_compare;
       -- no warning
@@ -264,7 +264,7 @@ begin
     end generate;
     
     priorty_arbt: if (ARBT_SCHEME = 0) generate
-      signal arbt_ena: std_logic := '0';  -- No use
+      signal arbt_ena: std_ulogic := '0';  -- No use
     begin
       priroty_grt_vec_gen: for i in 0 to (ARBT_NUM-1) generate
         i_is_0: if(i = 0) generate
@@ -291,16 +291,16 @@ begin
     end generate;
 
     sel_o_apb_cmd_ready_PROC: process(all)    
-      variable var_sel_o_icb_cmd_read : std_logic_vector(1-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_addr : std_logic_vector(AW-1    downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_wdata: std_logic_vector(DW-1    downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_wmask: std_logic_vector(DW/8-1  downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_burst: std_logic_vector(2-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_beat : std_logic_vector(2-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_lock : std_logic_vector(1-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_excl : std_logic_vector(1-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_size : std_logic_vector(2-1     downto 0):= (others=> '0');
-      variable var_sel_o_icb_cmd_usr  : std_logic_vector(USR_W-1 downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_read : std_ulogic_vector(1-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_addr : std_ulogic_vector(AW-1    downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_wdata: std_ulogic_vector(DW-1    downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_wmask: std_ulogic_vector(DW/8-1  downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_burst: std_ulogic_vector(2-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_beat : std_ulogic_vector(2-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_lock : std_ulogic_vector(1-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_excl : std_ulogic_vector(1-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_size : std_ulogic_vector(2-1     downto 0):= (others=> '0');
+      variable var_sel_o_icb_cmd_usr  : std_ulogic_vector(USR_W-1 downto 0):= (others=> '0');
     begin
       for i in 0 to (ARBT_NUM-1) loop
         var_sel_o_icb_cmd_read  := var_sel_o_icb_cmd_read  or ( (1-1     downto 0 => i_bus_icb_cmd_sel(i)) and i_icb_cmd_read (i) );
@@ -329,7 +329,7 @@ begin
     o_icb_cmd_valid_real <= or(i_bus_icb_cmd_valid);
 
     i_arbt_indic_id_PROC: process(all)
-      variable var_i_arbt_indic_id: std_logic_vector(ARBT_PTR_W-1 downto 0):= (others=> '0');
+      variable var_i_arbt_indic_id: std_ulogic_vector(ARBT_PTR_W-1 downto 0):= (others=> '0');
     begin
       for j in 0 to (ARBT_NUM-1) loop
         var_i_arbt_indic_id := var_i_arbt_indic_id or ((ARBT_PTR_W-1 downto 0 => i_bus_icb_cmd_sel(j)) and to_slv(std_ulogic_vector(to_unsigned(j, ARBT_PTR_W))));
@@ -406,15 +406,23 @@ begin
     o_icb_cmd_size        <= sel_o_icb_cmd_size ;
     o_icb_cmd_usr         <= sel_o_icb_cmd_usr  ;
   
-    o_icb_rsp_ready_pre   <= i_bus_icb_rsp_ready(to_integer(unsigned(o_icb_rsp_port_id))); 
+    o_icb_rsp_ready_pre   <= i_bus_icb_rsp_ready(to_integer(u_unsigned(o_icb_rsp_port_id))); 
 
     i_bus_icb_rsp_err     <= (ARBT_NUM-1 downto 0 => o_icb_rsp_err    );  
-    i_bus_icb_rsp_excl_ok <= (ARBT_NUM-1 downto 0 => o_icb_rsp_excl_ok);  
-    i_bus_icb_rsp_rdata_gen: for i in 0 to ARBT_NUM-1 generate
-      i_bus_icb_rsp_rdata(DW*(i+1)-1 downto DW*i) <=  o_icb_rsp_rdata; 
+    i_bus_icb_rsp_excl_ok <= (ARBT_NUM-1 downto 0 => o_icb_rsp_excl_ok);
+	 
+    -- assign i_bus_icb_rsp_rdata   = {ARBT_NUM{o_icb_rsp_rdata}};
+	 -- output [ARBT_NUM*DW-1:0]    i_bus_icb_rsp_rdata,
+	 -- input  [DW-1:0]    o_icb_rsp_rdata,
+	 i_bus_icb_rsp_rdata_gen: for i in 0 to ARBT_NUM-1 generate
+      i_bus_icb_rsp_rdata((i+1)*DW-1 downto i*DW) <=  o_icb_rsp_rdata; 
     end generate;
-    i_bus_icb_rsp_usr_gen: for i in 0 to USR_W-1 generate
-      i_bus_icb_rsp_usr(USR_W*(i+1)-1 downto USR_W*i) <= o_icb_rsp_usr;
+	 
+    -- assign i_bus_icb_rsp_usr     = {ARBT_NUM{o_icb_rsp_usr}};
+	 -- output [ARBT_NUM*USR_W-1:0] i_bus_icb_rsp_usr,
+	 -- input  [USR_W-1:0] o_icb_rsp_usr,
+	 i_bus_icb_rsp_usr_gen: for i in 0 to ARBT_NUM-1 generate
+      i_bus_icb_rsp_usr((i+1)*USR_W-1 downto i*USR_W) <= o_icb_rsp_usr;
     end generate;
   end generate;
 end impl;
@@ -490,14 +498,14 @@ architecture impl of sirv_gnrl_icb_buffer is
   constant CMD_PACK_W: integer:= (1+AW+DW+(DW/8)+1+1+2+2+2+USR_W);
   constant RSP_PACK_W: integer:= (2+DW+USR_W);
 
-  signal cmd_fifo_i_dat, cmd_fifo_o_dat: std_logic_vector(CMD_PACK_W-1 downto 0);
-  signal rsp_fifo_i_dat, rsp_fifo_o_dat: std_logic_vector(RSP_PACK_W-1 downto 0);
-  signal outs_cnt_inc: std_logic;
-  signal outs_cnt_dec: std_logic;
-  signal outs_cnt_ena: std_logic;
-  signal outs_cnt_r:   std_logic_vector(OUTS_CNT_W-1 downto 0);
-  signal outs_cnt_nxt: std_logic_vector(OUTS_CNT_W-1 downto 0);
-  signal outs_cnt_r_compare: std_logic;
+  signal cmd_fifo_i_dat, cmd_fifo_o_dat: std_ulogic_vector(CMD_PACK_W-1 downto 0);
+  signal rsp_fifo_i_dat, rsp_fifo_o_dat: std_ulogic_vector(RSP_PACK_W-1 downto 0);
+  signal outs_cnt_inc: std_ulogic;
+  signal outs_cnt_dec: std_ulogic;
+  signal outs_cnt_ena: std_ulogic;
+  signal outs_cnt_r:   std_ulogic_vector(OUTS_CNT_W-1 downto 0);
+  signal outs_cnt_nxt: std_ulogic_vector(OUTS_CNT_W-1 downto 0);
+  signal outs_cnt_r_compare: std_ulogic;
 
   component sirv_gnrl_fifo is
     generic(CUT_READY: integer;
@@ -592,8 +600,8 @@ begin
   -- If meanwhile no or have set and clear, then no changes
   outs_cnt_ena <= outs_cnt_inc xor outs_cnt_dec;
   -- If only inc or only dec
-  outs_cnt_nxt <= std_logic_vector(unsigned(outs_cnt_r) + '1') when outs_cnt_inc = '1' else
-                  std_logic_vector(unsigned(outs_cnt_r) - '1');
+  outs_cnt_nxt <= std_logic_vector(u_unsigned(outs_cnt_r) + '1') when outs_cnt_inc = '1' else
+                  std_logic_vector(u_unsigned(outs_cnt_r) - '1');
   outs_cnt_dfflr: component sirv_gnrl_dfflr generic map( OUTS_CNT_W
                                                        )
                                                port map( outs_cnt_ena,
@@ -603,10 +611,12 @@ begin
                                                          rst_n
                                                        );
   
-  --icb_buffer_active <= i_icb_cmd_valid or (not( unsigned(outs_cnt_r) ?= 0 )); -- get warning
-  outs_cnt_r_compare             <= '1' when to_integer(unsigned(outs_cnt_r)) = 0 else
-                                    '0';
-  icb_buffer_active <= i_icb_cmd_valid or (not outs_cnt_r_compare);
+  --icb_buffer_active <= i_icb_cmd_valid or (not(u_unsigned(outs_cnt_r) ?= 0 )); -- get warning
+  icb_buffer_active <= i_icb_cmd_valid or (not( outs_cnt_r ?= (OUTS_CNT_W-1 downto 0 => '0') ));
+  
+  --  outs_cnt_r_compare             <= '1' when to_integer(u_unsigned(outs_cnt_r)) = 0 else
+  --                                    '0';
+  --  icb_buffer_active <= i_icb_cmd_valid or (not outs_cnt_r_compare);
 end impl;
 
 -- ===========================================================================
@@ -675,16 +685,16 @@ entity sirv_gnrl_icb_n2w is
 end sirv_gnrl_icb_n2w;
 
 architecture impl of sirv_gnrl_icb_n2w is
-  signal cmd_y_lo_hi:      std_logic_vector(0 downto 0);
-  signal rsp_y_lo_hi:      std_logic_vector(0 downto 0);
-  signal n2w_fifo_wen:     std_logic;
-  signal n2w_fifo_ren:     std_logic;
-  signal n2w_fifo_i_ready: std_logic;
-  signal n2w_fifo_i_valid: std_logic;
-  signal n2w_fifo_full:    std_logic;
-  signal n2w_fifo_o_valid: std_logic;
-  signal n2w_fifo_o_ready: std_logic;
-  signal n2w_fifo_empty:   std_logic;
+  signal cmd_y_lo_hi:      std_ulogic_vector(0 downto 0);
+  signal rsp_y_lo_hi:      std_ulogic_vector(0 downto 0);
+  signal n2w_fifo_wen:     std_ulogic;
+  signal n2w_fifo_ren:     std_ulogic;
+  signal n2w_fifo_i_ready: std_ulogic;
+  signal n2w_fifo_i_valid: std_ulogic;
+  signal n2w_fifo_full:    std_ulogic;
+  signal n2w_fifo_o_valid: std_ulogic;
+  signal n2w_fifo_o_ready: std_ulogic;
+  signal n2w_fifo_empty:   std_ulogic;
   
   component sirv_gnrl_pipe_stage is
     generic(
@@ -872,63 +882,63 @@ entity sirv_gnrl_icb_splt is
 end sirv_gnrl_icb_splt;
   
 architecture impl of sirv_gnrl_icb_splt is 
-  signal o_icb_cmd_valid: std_logic_vector(SPLT_NUM-1 downto 0);
-  signal o_icb_cmd_ready: std_logic_vector(SPLT_NUM-1 downto 0);
+  signal o_icb_cmd_valid: std_ulogic_vector(SPLT_NUM-1 downto 0);
+  signal o_icb_cmd_ready: std_ulogic_vector(SPLT_NUM-1 downto 0);
 
-  type o_icb_cmd_read_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(1-1 downto 0);
+  type o_icb_cmd_read_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(1-1 downto 0);
   signal o_icb_cmd_read:  o_icb_cmd_read_t;
 
-  type o_icb_cmd_addr_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(AW-1 downto 0);
+  type o_icb_cmd_addr_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(AW-1 downto 0);
   signal o_icb_cmd_addr:  o_icb_cmd_addr_t;
 
-  type o_icb_data_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(DW-1 downto 0);
+  type o_icb_data_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(DW-1 downto 0);
   signal o_icb_cmd_wdata: o_icb_data_t;
 
-  type o_icb_cmd_wmask_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(DW/8-1 downto 0);
+  type o_icb_cmd_wmask_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(DW/8-1 downto 0);
   signal o_icb_cmd_wmask: o_icb_cmd_wmask_t;
 
-  type o_icb_cmd_2element_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(1 downto 0);
+  type o_icb_cmd_2element_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(1 downto 0);
   signal o_icb_cmd_burst: o_icb_cmd_2element_t;
   signal o_icb_cmd_beat:  o_icb_cmd_2element_t;
   signal o_icb_cmd_size:  o_icb_cmd_2element_t;
 
-  signal o_icb_cmd_lock:  std_logic_vector(SPLT_NUM-1 downto 0); 
-  signal o_icb_cmd_excl:  std_logic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_cmd_lock:  std_ulogic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_cmd_excl:  std_ulogic_vector(SPLT_NUM-1 downto 0); 
 
-  type o_icb_usr_w_t is array(SPLT_NUM-1 downto 0) of std_logic_vector(USR_W-1 downto 0);
+  type o_icb_usr_w_t is array(SPLT_NUM-1 downto 0) of std_ulogic_vector(USR_W-1 downto 0);
   signal o_icb_cmd_usr:   o_icb_usr_w_t;
   
-  signal o_icb_rsp_valid:     std_logic_vector(SPLT_NUM-1 downto 0); 
-  signal o_icb_rsp_ready:     std_logic_vector(SPLT_NUM-1 downto 0); 
-  signal o_icb_rsp_err:       std_logic_vector(SPLT_NUM-1 downto 0); 
-  signal o_icb_rsp_excl_ok:   std_logic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_rsp_valid:     std_ulogic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_rsp_ready:     std_ulogic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_rsp_err:       std_ulogic_vector(SPLT_NUM-1 downto 0); 
+  signal o_icb_rsp_excl_ok:   std_ulogic_vector(SPLT_NUM-1 downto 0); 
   signal o_icb_rsp_rdata:     o_icb_data_t;
   signal o_icb_rsp_usr:       o_icb_usr_w_t;
 
-  signal sel_o_apb_cmd_ready: std_logic;
+  signal sel_o_apb_cmd_ready: std_ulogic;
   
-  signal rspid_fifo_bypass:   std_logic;
-  signal rspid_fifo_wen:      std_logic;
-  signal rspid_fifo_ren:      std_logic;
+  signal rspid_fifo_bypass:   std_ulogic;
+  signal rspid_fifo_wen:      std_ulogic;
+  signal rspid_fifo_ren:      std_ulogic;
   
-  signal o_icb_rsp_port_id:   std_logic_vector(SPLT_PTR_W-1 downto 0);
+  signal o_icb_rsp_port_id:   std_ulogic_vector(SPLT_PTR_W-1 downto 0);
 
-  signal rspid_fifo_i_valid:  std_logic;
-  signal rspid_fifo_o_valid:  std_logic;
-  signal rspid_fifo_i_ready:  std_logic;
-  signal rspid_fifo_o_ready:  std_logic;
-  signal rspid_fifo_rdat:     std_logic_vector(SPLT_PTR_W-1 downto 0);
-  signal rspid_fifo_wdat:     std_logic_vector(SPLT_PTR_W-1 downto 0);
+  signal rspid_fifo_i_valid:  std_ulogic;
+  signal rspid_fifo_o_valid:  std_ulogic;
+  signal rspid_fifo_i_ready:  std_ulogic;
+  signal rspid_fifo_o_ready:  std_ulogic;
+  signal rspid_fifo_rdat:     std_ulogic_vector(SPLT_PTR_W-1 downto 0);
+  signal rspid_fifo_wdat:     std_ulogic_vector(SPLT_PTR_W-1 downto 0);
 
-  signal rspid_fifo_full:     std_logic;
-  signal rspid_fifo_empty:    std_logic;
-  signal i_splt_indic_id:     std_logic_vector(SPLT_PTR_W-1 downto 0);
+  signal rspid_fifo_full:     std_ulogic;
+  signal rspid_fifo_empty:    std_ulogic;
+  signal i_splt_indic_id:     std_ulogic_vector(SPLT_PTR_W-1 downto 0);
 
-  signal i_icb_cmd_ready_pre: std_logic;
-  signal i_icb_cmd_valid_pre: std_logic;
+  signal i_icb_cmd_ready_pre: std_ulogic;
+  signal i_icb_cmd_valid_pre: std_ulogic;
 
-  signal i_icb_rsp_ready_pre: std_logic;
-  signal i_icb_rsp_valid_pre: std_logic;
+  signal i_icb_rsp_ready_pre: std_ulogic;
+  signal i_icb_rsp_valid_pre: std_ulogic;
 
   component sirv_gnrl_pipe_stage is
     generic(CUT_READY: integer;
@@ -1017,7 +1027,7 @@ begin
   -- (*) The FIFO is not full
 
   sel_o_apb_cmd_ready_PROC: process(all)
-    variable var_sel_o_apb_cmd_ready: std_logic:= '0';
+    variable var_sel_o_apb_cmd_ready: std_ulogic:= '0';
   begin
     for j in 0 to (SPLT_NUM-1) loop
       var_sel_o_apb_cmd_ready:= var_sel_o_apb_cmd_ready or (i_icb_splt_indic(j) and o_icb_cmd_ready(j));
@@ -1048,12 +1058,12 @@ begin
   end generate;
   ptr_not_1hot: if(SPLT_PTR_1HOT /= 1) generate
     i_splt_indic_id_PROC: process(all)
-    variable var_i_splt_indic_id: unsigned(SPLT_PTR_W-1 downto 0):= (others=> '0');
+    variable var_i_splt_indic_id: u_unsigned(SPLT_PTR_W-1 downto 0):= (others=> '0');
     begin
       for j in 0 to (SPLT_NUM-1) loop
       var_i_splt_indic_id := var_i_splt_indic_id or ((SPLT_PTR_W-1 downto 0 => i_icb_splt_indic(j)) and to_unsigned(j, SPLT_PTR_W));
       end loop;
-      i_splt_indic_id<= std_logic_vector(var_i_splt_indic_id);
+      i_splt_indic_id<= std_ulogic_vector(var_i_splt_indic_id);
     end process;
   end generate;
 
@@ -1153,10 +1163,10 @@ begin
     i_icb_rsp_valid_pre <= or(o_icb_rsp_valid and o_icb_rsp_port_id);
       
     sel_icb_rsp_PROC: process(all)
-      variable sel_i_icb_rsp_err:     std_logic:= '0';
-      variable sel_i_icb_rsp_excl_ok: std_logic:= '0';
-      variable sel_i_icb_rsp_rdata:   std_logic_vector(DW-1 downto 0):= (others=> '0');
-      variable sel_i_icb_rsp_usr:     std_logic_vector(USR_W-1 downto 0):= (others=> '0');
+      variable sel_i_icb_rsp_err:     std_ulogic:= '0';
+      variable sel_i_icb_rsp_excl_ok: std_ulogic:= '0';
+      variable sel_i_icb_rsp_rdata:   std_ulogic_vector(DW-1 downto 0):= (others=> '0');
+      variable sel_i_icb_rsp_usr:     std_ulogic_vector(USR_W-1 downto 0):= (others=> '0');
     begin
       for j in 0 to SPLT_NUM-1 loop
         sel_i_icb_rsp_err     := sel_i_icb_rsp_err     or (                     o_icb_rsp_port_id(j)  and o_icb_rsp_err    (j));
@@ -1172,18 +1182,18 @@ begin
   end generate;
   ptr_not_1hot_rsp: if (SPLT_PTR_1HOT /= 1) generate
     o_icb_rsp_ready_gen: for i in 0 to SPLT_NUM-1 generate
-      signal id_compare: std_logic;
+      signal id_compare: std_ulogic;
     begin
-      id_compare <= '1' when (to_integer(unsigned(o_icb_rsp_port_id)) = i) else
+      id_compare <= '1' when (to_integer(u_unsigned(o_icb_rsp_port_id)) = i) else
                     '0';
       o_icb_rsp_ready(i) <= id_compare and i_icb_rsp_ready_pre;
     end generate;
 
-    i_icb_rsp_valid_pre <= o_icb_rsp_valid  (to_integer(unsigned(o_icb_rsp_port_id))); 
-    i_icb_rsp_err       <= o_icb_rsp_err    (to_integer(unsigned(o_icb_rsp_port_id))); 
-    i_icb_rsp_excl_ok   <= o_icb_rsp_excl_ok(to_integer(unsigned(o_icb_rsp_port_id))); 
-    i_icb_rsp_rdata     <= o_icb_rsp_rdata  (to_integer(unsigned(o_icb_rsp_port_id))); 
-    i_icb_rsp_usr       <= o_icb_rsp_usr    (to_integer(unsigned(o_icb_rsp_port_id))); 
+    i_icb_rsp_valid_pre <= o_icb_rsp_valid  (to_integer(u_unsigned(o_icb_rsp_port_id))); 
+    i_icb_rsp_err       <= o_icb_rsp_err    (to_integer(u_unsigned(o_icb_rsp_port_id))); 
+    i_icb_rsp_excl_ok   <= o_icb_rsp_excl_ok(to_integer(u_unsigned(o_icb_rsp_port_id))); 
+    i_icb_rsp_rdata     <= o_icb_rsp_rdata  (to_integer(u_unsigned(o_icb_rsp_port_id))); 
+    i_icb_rsp_usr       <= o_icb_rsp_usr    (to_integer(u_unsigned(o_icb_rsp_port_id))); 
   end generate;
 end impl;
 
@@ -1264,56 +1274,56 @@ entity sirv_gnrl_icb2axi is
 end sirv_gnrl_icb2axi;
 
 architecture impl of sirv_gnrl_icb2axi is 
-  signal i_axi_arvalid: std_logic;
-  signal i_axi_arready: std_logic;
-  signal i_axi_araddr:  std_logic_vector(AW-1 downto 0);
-  signal i_axi_arcache: std_logic_vector(3 downto 0);
-  signal i_axi_arprot:  std_logic_vector(2 downto 0); 
-  signal i_axi_arlock:  std_logic_vector(1 downto 0);
-  signal i_axi_arburst: std_logic_vector(1 downto 0);
-  signal i_axi_arlen:   std_logic_vector(3 downto 0);
-  signal i_axi_arsize:  std_logic_vector(2 downto 0); 
+  signal i_axi_arvalid: std_ulogic;
+  signal i_axi_arready: std_ulogic;
+  signal i_axi_araddr:  std_ulogic_vector(AW-1 downto 0);
+  signal i_axi_arcache: std_ulogic_vector(3 downto 0);
+  signal i_axi_arprot:  std_ulogic_vector(2 downto 0); 
+  signal i_axi_arlock:  std_ulogic_vector(1 downto 0);
+  signal i_axi_arburst: std_ulogic_vector(1 downto 0);
+  signal i_axi_arlen:   std_ulogic_vector(3 downto 0);
+  signal i_axi_arsize:  std_ulogic_vector(2 downto 0); 
  
-  signal i_axi_awvalid: std_logic;
-  signal i_axi_awready: std_logic; 
-  signal i_axi_awaddr:  std_logic_vector(AW-1 downto 0);
-  signal i_axi_awcache: std_logic_vector(3 downto 0);
-  signal i_axi_awprot:  std_logic_vector(2 downto 0);
-  signal i_axi_awlock:  std_logic_vector(1 downto 0);
-  signal i_axi_awburst: std_logic_vector(1 downto 0);
-  signal i_axi_awlen:   std_logic_vector(3 downto 0);
-  signal i_axi_awsize:  std_logic_vector(2 downto 0);
+  signal i_axi_awvalid: std_ulogic;
+  signal i_axi_awready: std_ulogic; 
+  signal i_axi_awaddr:  std_ulogic_vector(AW-1 downto 0);
+  signal i_axi_awcache: std_ulogic_vector(3 downto 0);
+  signal i_axi_awprot:  std_ulogic_vector(2 downto 0);
+  signal i_axi_awlock:  std_ulogic_vector(1 downto 0);
+  signal i_axi_awburst: std_ulogic_vector(1 downto 0);
+  signal i_axi_awlen:   std_ulogic_vector(3 downto 0);
+  signal i_axi_awsize:  std_ulogic_vector(2 downto 0);
  
  
-  signal i_axi_rvalid:  std_logic;
-  signal i_axi_rready:  std_logic;
-  signal i_axi_rdata:   std_logic_vector(DW-1 downto 0);
-  signal i_axi_rresp:   std_logic_vector(1 downto 0);
-  signal i_axi_rlast:   std_logic;
+  signal i_axi_rvalid:  std_ulogic;
+  signal i_axi_rready:  std_ulogic;
+  signal i_axi_rdata:   std_ulogic_vector(DW-1 downto 0);
+  signal i_axi_rresp:   std_ulogic_vector(1 downto 0);
+  signal i_axi_rlast:   std_ulogic;
  
-  signal i_axi_wvalid:  std_logic;
-  signal i_axi_wready:  std_logic;
-  signal i_axi_wdata:   std_logic_vector(DW-1 downto 0);
-  signal i_axi_wstrb:   std_logic_vector((DW/8)-1 downto 0);
-  signal i_axi_wlast:   std_logic;
+  signal i_axi_wvalid:  std_ulogic;
+  signal i_axi_wready:  std_ulogic;
+  signal i_axi_wdata:   std_ulogic_vector(DW-1 downto 0);
+  signal i_axi_wstrb:   std_ulogic_vector((DW/8)-1 downto 0);
+  signal i_axi_wlast:   std_ulogic;
    
-  signal i_axi_bvalid:  std_logic;
-  signal i_axi_bready:  std_logic;
-  signal i_axi_bresp:   std_logic_vector(1 downto 0);
+  signal i_axi_bvalid:  std_ulogic;
+  signal i_axi_bready:  std_ulogic;
+  signal i_axi_bresp:   std_ulogic_vector(1 downto 0);
   
-  signal tmp:           std_logic;
-  signal rw_fifo_full:  std_logic;
-  signal rw_fifo_empty: std_logic;
+  signal tmp:           std_ulogic;
+  signal rw_fifo_full:  std_ulogic;
+  signal rw_fifo_empty: std_ulogic;
 
-  signal rw_fifo_wen:   std_logic;
-  signal rw_fifo_ren:   std_logic;
+  signal rw_fifo_wen:   std_ulogic;
+  signal rw_fifo_ren:   std_ulogic;
 
-  signal rw_fifo_i_ready:   std_logic;
-  signal rw_fifo_i_valid:   std_logic;
-  signal rw_fifo_o_valid:   std_logic;
-  signal rw_fifo_o_ready:   std_logic;
+  signal rw_fifo_i_ready:   std_ulogic;
+  signal rw_fifo_i_valid:   std_ulogic;
+  signal rw_fifo_o_valid:   std_ulogic;
+  signal rw_fifo_o_ready:   std_ulogic;
 
-  signal i_icb_rsp_read:    std_logic_vector(0 downto 0);
+  signal i_icb_rsp_read:    std_ulogic_vector(0 downto 0);
 
   component sirv_gnrl_fifo is
     generic(CUT_READY: integer;
@@ -1635,7 +1645,7 @@ entity sirv_gnrl_icb32towishb8 is
 end sirv_gnrl_icb32towishb8;
 
 architecture impl of sirv_gnrl_icb32towishb8 is 
-  signal wb_dat_r_remap: std_logic_vector(32-1 downto 0);
+  signal wb_dat_r_remap: std_ulogic_vector(32-1 downto 0);
 
   component sirv_gnrl_fifo is
     generic(CUT_READY: integer;
@@ -1666,7 +1676,7 @@ begin
               i_icb_cmd_wdata( 7 downto  0) when i_icb_cmd_wmask(0) = '1' else
               (others=> '0');
   
-  wb_dat_r_remap<= ((31 downto 8 => '0'),wb_dat_r) sll to_integer(unsigned(i_icb_cmd_addr(1 downto 0) & "000"));
+  wb_dat_r_remap<= ((31 downto 8 => '0'),wb_dat_r) sll to_integer(u_unsigned(i_icb_cmd_addr(1 downto 0) & "000"));
 
   -- Since the Wishbone reponse channel does not have handhake scheme, but the
   --   ICB have, so the response may not be accepted by the upstream master
@@ -1744,11 +1754,11 @@ end sirv_gnrl_icb2apb;
 --   So in order to make sure the functionality is correct, we must put
 --   a reponse bypass-buffer here, to always be able to accept response from apb
 architecture impl of sirv_gnrl_icb2apb is 
-  signal apb_enable_r:   std_logic_vector(0 downto 0);
-  signal apb_enable_set: std_logic;
-  signal apb_enable_clr: std_logic;
-  signal apb_enable_ena: std_logic;
-  signal apb_enable_nxt: std_logic_vector(0 downto 0);
+  signal apb_enable_r:   std_ulogic_vector(0 downto 0);
+  signal apb_enable_set: std_ulogic;
+  signal apb_enable_clr: std_ulogic;
+  signal apb_enable_ena: std_ulogic;
+  signal apb_enable_nxt: std_ulogic_vector(0 downto 0);
 
   component sirv_gnrl_fifo is
     generic(CUT_READY: integer;
@@ -1874,21 +1884,21 @@ end sirv_gnrl_icb2ahbl;
 
 architecture impl of sirv_gnrl_icb2ahbl is  
   constant FSM_W : integer:= 2;
-  constant STA_AR: std_logic_vector(1 downto 0):= "00"; 
-  constant STA_WD: std_logic_vector(1 downto 0):= "01";
-  constant STA_RD: std_logic_vector(1 downto 0):= "10";
+  constant STA_AR: std_ulogic_vector(1 downto 0):= "00"; 
+  constant STA_WD: std_ulogic_vector(1 downto 0):= "01";
+  constant STA_RD: std_ulogic_vector(1 downto 0):= "10";
 
-  signal ahbl_eff_trans: std_logic;
-  signal to_wd_sta:      std_logic;
-  signal to_rd_sta:      std_logic;
-  signal to_ar_sta:      std_logic;
-  signal ahbl_sta_is_ar: std_logic;
+  signal ahbl_eff_trans: std_ulogic;
+  signal to_wd_sta:      std_ulogic;
+  signal to_rd_sta:      std_ulogic;
+  signal to_ar_sta:      std_ulogic;
+  signal ahbl_sta_is_ar: std_ulogic;
 
-  signal ahbl_sta_r:     std_logic_vector(FSM_W-1 downto 0);
-  signal ahbl_sta_nxt:   std_logic_vector(FSM_W-1 downto 0);
+  signal ahbl_sta_r:     std_ulogic_vector(FSM_W-1 downto 0);
+  signal ahbl_sta_nxt:   std_ulogic_vector(FSM_W-1 downto 0);
 
-  signal ahbl_hwdata_r:  std_logic_vector(DW-1 downto 0);
-  signal ahbl_hwdata_ena:std_logic;
+  signal ahbl_hwdata_r:  std_ulogic_vector(DW-1 downto 0);
+  signal ahbl_hwdata_ena:std_ulogic;
 begin
   ahbl_eff_trans <= ahbl_hready and ahbl_htrans(1);
   icb_cmd_ready  <= ahbl_hready;
@@ -2056,16 +2066,16 @@ architecture impl of sirv_gnrl_axi_buffer is
   constant R_CHNL_W:  integer:= DW+2+1;
   constant B_CHNL_W:  integer:= 2;
 
-  signal i_axi_ar_chnl: std_logic_vector(AR_CHNL_W-1 downto 0);
-  signal o_axi_ar_chnl: std_logic_vector(AR_CHNL_W-1 downto 0);
-  signal i_axi_aw_chnl: std_logic_vector(AW_CHNL_W-1 downto 0);
-  signal o_axi_aw_chnl: std_logic_vector(AW_CHNL_W-1 downto 0);
-  signal i_axi_w_chnl:  std_logic_vector(W_CHNL_W-1 downto 0);
-  signal o_axi_w_chnl:  std_logic_vector(W_CHNL_W-1 downto 0);
-  signal o_axi_r_chnl:  std_logic_vector(R_CHNL_W-1 downto 0);
-  signal i_axi_r_chnl:  std_logic_vector(R_CHNL_W-1 downto 0);
-  signal o_axi_b_chnl:  std_logic_vector(B_CHNL_W-1 downto 0);
-  signal i_axi_b_chnl:  std_logic_vector(B_CHNL_W-1 downto 0);
+  signal i_axi_ar_chnl: std_ulogic_vector(AR_CHNL_W-1 downto 0);
+  signal o_axi_ar_chnl: std_ulogic_vector(AR_CHNL_W-1 downto 0);
+  signal i_axi_aw_chnl: std_ulogic_vector(AW_CHNL_W-1 downto 0);
+  signal o_axi_aw_chnl: std_ulogic_vector(AW_CHNL_W-1 downto 0);
+  signal i_axi_w_chnl:  std_ulogic_vector(W_CHNL_W-1 downto 0);
+  signal o_axi_w_chnl:  std_ulogic_vector(W_CHNL_W-1 downto 0);
+  signal o_axi_r_chnl:  std_ulogic_vector(R_CHNL_W-1 downto 0);
+  signal i_axi_r_chnl:  std_ulogic_vector(R_CHNL_W-1 downto 0);
+  signal o_axi_b_chnl:  std_ulogic_vector(B_CHNL_W-1 downto 0);
+  signal i_axi_b_chnl:  std_ulogic_vector(B_CHNL_W-1 downto 0);
 
   component sirv_gnrl_fifo is
     generic(CUT_READY: integer;

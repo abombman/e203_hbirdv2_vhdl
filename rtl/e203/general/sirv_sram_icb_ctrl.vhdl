@@ -74,18 +74,18 @@ end sirv_sram_icb_ctrl;
 -- We need to use bypbuf to flop one stage for the i_cmd channel to cut 
 --   down the back-pressure ready signal
 architecture impl of sirv_sram_icb_ctrl is 
-  signal byp_icb_cmd_valid: std_logic;
-  signal byp_icb_cmd_ready: std_logic;
-  signal byp_icb_cmd_read:  std_logic;
-  signal byp_icb_cmd_addr:  std_logic_vector(AW-1 downto 0);
-  signal byp_icb_cmd_wdata: std_logic_vector(DW-1 downto 0);
-  signal byp_icb_cmd_wmask: std_logic_vector(MW-1 downto 0);
-  signal byp_icb_cmd_usr:   std_logic_vector(USR_W-1 downto 0);
+  signal byp_icb_cmd_valid: std_ulogic;
+  signal byp_icb_cmd_ready: std_ulogic;
+  signal byp_icb_cmd_read:  std_ulogic;
+  signal byp_icb_cmd_addr:  std_ulogic_vector(AW-1 downto 0);
+  signal byp_icb_cmd_wdata: std_ulogic_vector(DW-1 downto 0);
+  signal byp_icb_cmd_wmask: std_ulogic_vector(MW-1 downto 0);
+  signal byp_icb_cmd_usr:   std_ulogic_vector(USR_W-1 downto 0);
 
   constant BUF_CMD_PACK_W:  integer:= (AW+DW+MW+USR_W+1);
-  signal byp_icb_cmd_o_pack:std_logic_vector(BUF_CMD_PACK_W-1 downto 0);
-  signal byp_icb_cmd_i_pack:std_logic_vector(BUF_CMD_PACK_W-1 downto 0);
-  signal sram_active:       std_logic;
+  signal byp_icb_cmd_o_pack:std_ulogic_vector(BUF_CMD_PACK_W-1 downto 0);
+  signal byp_icb_cmd_i_pack:std_ulogic_vector(BUF_CMD_PACK_W-1 downto 0);
+  signal sram_active:       std_ulogic;
 
   component sirv_gnrl_bypbuf is
     generic(

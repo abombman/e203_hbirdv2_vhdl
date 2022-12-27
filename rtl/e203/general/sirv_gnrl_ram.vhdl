@@ -56,11 +56,11 @@ end sirv_gnrl_ram;
 
 architecture impl of sirv_gnrl_ram is
   component sirv_sim_ram is 
-  generic ( DP:           integer := 512;
-            FORCE_X2ZERO: integer := 0;
-            DW:           integer := 32;
-            MW:           integer := 4;
-            AW:           integer := 32 
+  generic ( DP:           integer;
+            FORCE_X2ZERO: integer;
+            DW:           integer;
+            MW:           integer;
+            AW:           integer 
   );
   port ( clk:  in  std_logic; 
          din:  in  std_logic_vector(DW-1 downto 0);
