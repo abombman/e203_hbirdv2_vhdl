@@ -36,16 +36,16 @@ entity sirv_gnrl_pipe_stage is
             DP:        integer:= 1;
             DW:        integer:= 32
     );
-    port( clk:   in std_logic;
-    	    rst_n: in std_logic;
+    port( clk:      in std_logic;
+    	  rst_n:    in std_logic;
 
-    	    i_vld:  in std_logic;                          ----------
-          i_rdy: out std_logic;                          -- upsteam
-          i_dat:  in std_logic_vector( DW-1 downto 0 );  ----------
+    	  i_vld:    in std_logic;                          ----------
+          i_rdy:   out std_logic;                          -- upsteam
+          i_dat:    in std_logic_vector( DW-1 downto 0 );  ----------
           
-          o_vld: out std_logic;                          ------------
-          o_rdy:  in std_logic;                          -- downsteam
-          o_dat: out std_logic_vector( DW-1 downto 0 )   ------------
+          o_vld:   out std_logic;                          ------------
+          o_rdy:    in std_logic;                          -- downsteam
+          o_dat:   out std_logic_vector( DW-1 downto 0 )   ------------
     );
 end sirv_gnrl_pipe_stage;
 
@@ -156,15 +156,15 @@ begin
     i_is_0: if i = 0 generate
       sync_dffr: entity work.sirv_gnrl_dffr(impl_better) 
                  generic map(DW) 
-                 port map(din_a, sync_dat(0), clk, rst_n);
+                 port map(dnxt => din_a, std_ulogic_vector(qout) => sync_dat(0), clk => clk, rst_n => rst_n);
     end generate;
     i_gt_0: if i > 0 generate
       sync_dffr: entity work.sirv_gnrl_dffr(impl_better) 
                  generic map(DW) 
-                 port map(sync_dat(i-1), sync_dat(i), clk, rst_n);
+                 port map(dnxt => to_slv(sync_dat(i-1)), std_ulogic_vector(qout) => sync_dat(i), clk => clk, rst_n => rst_n);
     end generate;
   end generate;
-  dout <= sync_dat(DP-1);
+  dout <= to_slv(sync_dat(DP-1));
 end impl;
 
 -- ====================================================================
@@ -189,12 +189,12 @@ entity sirv_gnrl_cdc_rx is
           --     (3) The i_vld is asserted low 
           --     (4) The i_rdy is asserted low
 
-          i_vld_a:in std_logic;
+          i_vld_a:in std_logic; -- i_vld_a need to be syncing
           i_rdy: out std_logic;
           i_dat:  in std_logic_vector( DW-1 downto 0 );
 
           -- The regular handshake interface at out-side
-          -- Just the regular handshake o_vld & o_rdy like AXI
+          -- Just the regular handshake i_vld & o_rdy like AXI
 
           o_vld: out std_logic;
           o_rdy:  in std_logic;
@@ -284,7 +284,11 @@ begin
   buf_dat_ena <= i_rdy_set;
   buf_dat_dfflr: entity work.sirv_gnrl_dfflr(impl_better) 
                  generic map(DW) 
-                 port map(buf_dat_ena, i_dat, buf_dat_r, clk, rst_n);
+                 port map(lden => std_logic(buf_dat_ena), 
+                          dnxt => i_dat, 
+                          std_ulogic_vector(qout) => buf_dat_r, 
+                          clk  => clk, 
+                          rst_n=> rst_n);
   
   -- The buf_vld is set when the buf is loaded with data
   buf_vld_set <= buf_dat_ena;
@@ -300,7 +304,7 @@ begin
   buf_rdy <= (not buf_vld_r);
   
   o_vld <= buf_vld_r;
-  o_dat <= buf_dat_r;
+  o_dat <= to_slv(buf_dat_r);
 end impl;
 
 -- ===========================================================================
@@ -333,10 +337,10 @@ entity sirv_gnrl_cdc_tx is
           i_dat:  in std_logic_vector( DW-1 downto 0 );
 
           -- The regular handshake interface at out-side
-          -- Just the regular handshake o_vld & o_rdy like AXI
+          -- Just the regular handshake i_vld & o_rdy like AXI
 
           o_vld: out std_logic;
-          o_rdy_a:in std_logic;
+          o_rdy_a:in std_logic; -- o_rdy_a need to be syncing
           o_dat: out std_logic_vector( DW-1 downto 0 );
           
           clk:    in std_logic;
@@ -410,7 +414,7 @@ architecture impl of sirv_gnrl_cdc_tx is
     -- The data buf is only loaded when the vld is set
     dat_dfflr: entity work.sirv_gnrl_dfflr(impl_better)
                generic map(DW) 
-               port map(lden=> vld_set, dnxt=> i_dat, qout=> dat_r, clk=> clk, rst_n=> rst_n);
+               port map(lden => vld_set, dnxt => i_dat, std_ulogic_vector(qout) => dat_r, clk => clk, rst_n => rst_n);
 
     -- Detect the neg-edge
     o_rdy_sync_dffr: entity work.sirv_gnrl_dffr(impl_better) 
@@ -432,7 +436,7 @@ architecture impl of sirv_gnrl_cdc_tx is
     -- The output valid
     o_vld <= vld_r;
     -- The output data
-    o_dat <= dat_r;
+    o_dat <= to_slv(dat_r);
 
     -- The input is ready when the  Not-ready indication is low or under clearing
     i_rdy <= (not nrdy_r) or nrdy_clr;
@@ -500,7 +504,14 @@ architecture impl of sirv_gnrl_bypbuf is
   end component;
 begin
   u_bypbuf_fifo: component sirv_gnrl_fifo generic map(DP=> DP, DW=> DW, CUT_READY=> 1)
-                                             port map(fifo_i_vld, fifo_i_rdy, fifo_i_dat, fifo_o_vld, fifo_o_rdy, fifo_o_dat, clk, rst_n);
+                                             port map(i_vld => fifo_i_vld, 
+                                                      i_rdy => fifo_i_rdy, 
+                                                      i_dat => to_slv(fifo_i_dat), 
+                                                      o_vld => fifo_o_vld, 
+                                                      o_rdy => fifo_o_rdy, 
+                                                      std_logic_vector(o_dat) => fifo_o_dat, 
+                                                      clk => clk, 
+                                                      rst_n => rst_n);
   
   -- This module is a super-weapon for timing fix,
   -- but it is tricky, think it harder when you are reading, or contact Bob Hu
@@ -518,10 +529,10 @@ begin
   o_vld <= fifo_o_vld or i_vld;
 
   -- The output data select the FIFO as high priority
-  o_dat <=  fifo_o_dat when fifo_o_vld = '1' else
+  o_dat <=  to_slv(fifo_o_dat) when fifo_o_vld = '1' else
             i_dat;
 
-  fifo_i_dat  <= i_dat; 
+  fifo_i_dat  <= std_ulogic_vector(i_dat); 
 
   -- Only pass to FIFO i-valid if FIFO is not bypassed
   fifo_i_vld <= i_vld and (not byp);
@@ -637,7 +648,7 @@ begin
       rptr_vec_nxt <= "1"; -- only one bit
     end generate;
     rptr_dp_not_1: if DP > 1 generate
-      rptr_vec_nxt <= ('1', others=> '0') when rptr_vec_r(DP-1) = '1'  -- multi bits, if MSB of rptr_vec_r is '1' then 
+      rptr_vec_nxt <= (0 => '1', others=> '0') when rptr_vec_r(DP-1) = '1'  -- multi bits, if MSB of rptr_vec_r is '1' then 
                                                                        -- rptr_vec_nxt will point back to LSB of rptr_vec_r
                       else (rptr_vec_r sll 1);                         -- else rptr_vec_nxt will point to leftshift one bit of rptr_vec_r
     end generate;
@@ -647,21 +658,37 @@ begin
       wptr_vec_nxt <= "1"; -- only one bit
     end generate;
     wptr_dp_not_1: if DP > 1 generate
-      wptr_vec_nxt <= ('1', others=> '0') when wptr_vec_r(DP-1) = '1'  -- multi bits, if MSB of wptr_vec_r is '1' then 
+      wptr_vec_nxt <= (0 => '1', others=> '0') when wptr_vec_r(DP-1) = '1'  -- multi bits, if MSB of wptr_vec_r is '1' then 
                                                                        -- wptr_vec_nxt will point back to LSB of wptr_vec_r
-                      else wptr_vec_r sll 1;                           -- else wptr_vec_nxt will point to leftshift one bit of wptr_vec_r
+                      else (wptr_vec_r sll 1);                           -- else wptr_vec_nxt will point to leftshift one bit of wptr_vec_r
     end generate;
 
     rptr_vec_0_dfflrs: entity work.sirv_gnrl_dfflrs(impl_better) generic map(1) 
-                                                                    port map(ren, rptr_vec_nxt(0 downto 0), rptr_vec_r(0 downto 0), clk, rst_n);
+                                                                    port map(lden => ren, 
+                                                                             dnxt => to_slv(rptr_vec_nxt(0 downto 0)), 
+                                                                             std_ulogic_vector(qout) => rptr_vec_r(0 downto 0), 
+                                                                             clk  => clk, 
+                                                                             rst_n=> rst_n);
     wptr_vec_0_dfflrs: entity work.sirv_gnrl_dfflrs(impl_better) generic map(1) 
-                                                                    port map(wen, wptr_vec_nxt(0 downto 0), wptr_vec_r(0 downto 0), clk, rst_n);
+                                                                    port map(lden => wen, 
+                                                                             dnxt => to_slv(wptr_vec_nxt(0 downto 0)), 
+                                                                             std_ulogic_vector(qout) => wptr_vec_r(0 downto 0), 
+                                                                             clk  => clk, 
+                                                                             rst_n=> rst_n);
     
     dp_gt1: if DP > 1 generate
       rptr_vec_31_dfflr: entity work.sirv_gnrl_dfflr(impl_better) generic map(DP-1) 
-                                                                     port map(ren, rptr_vec_nxt(DP-1 downto 1), rptr_vec_r(DP-1 downto 1), clk, rst_n);
+                                                                     port map(lden => ren, 
+                                                                              dnxt => to_slv(rptr_vec_nxt(DP-1 downto 1)), 
+                                                                              std_ulogic_vector(qout) => rptr_vec_r(DP-1 downto 1), 
+                                                                              clk  => clk, 
+                                                                              rst_n=> rst_n);
       wptr_vec_31_dfflr: entity work.sirv_gnrl_dfflr(impl_better) generic map(DP-1) 
-                                                                     port map(wen, wptr_vec_nxt(DP-1 downto 1), wptr_vec_r(DP-1 downto 1), clk, rst_n);
+                                                                     port map(lden => wen,
+                                                                              dnxt => to_slv(wptr_vec_nxt(DP-1 downto 1)), 
+                                                                              std_ulogic_vector(qout) => wptr_vec_r(DP-1 downto 1), 
+                                                                              clk  => clk, 
+                                                                              rst_n=> rst_n);
     end generate;
 
     --------------------------------------------------------------------------------
@@ -671,21 +698,34 @@ begin
                (vec_r srl 1);
 
     vec_0_dfflrs: entity work.sirv_gnrl_dfflrs(impl_better) generic map(1)
-                                                               port map(vec_en, vec_nxt(0 downto 0), vec_r(0 downto 0), clk, rst_n);
+                                                               port map(lden => vec_en, 
+                                                                        dnxt => to_slv(vec_nxt(0 downto 0)), 
+                                                                        std_ulogic_vector(qout) => vec_r(0 downto 0), 
+                                                                        clk  => clk, 
+                                                                        rst_n=> rst_n);
     vec_31_dfflr: entity work.sirv_gnrl_dfflr(impl_better)  generic map(DP)
-                                                               port map(vec_en, vec_nxt(DP downto 1), vec_r(DP downto 1), clk, rst_n);
+                                                               port map(lden => vec_en, 
+                                                                        dnxt => to_slv(vec_nxt(DP downto 1)), 
+                                                                        std_ulogic_vector(qout) => vec_r(DP downto 1), 
+                                                                        clk  => clk, 
+                                                                        rst_n=> rst_n);
     
-    i_vec <= '0' & vec_r(DP downto 1);
-    o_vec <= '0' & vec_r(DP downto 1);
+    i_vec <= '0' & vec_r(DP downto 1);  -- i_vec : std_ulogic_vector(DP downto 0)
+    o_vec <= '0' & vec_r(DP downto 1);  -- o_vec : std_ulogic_vector(DP downto 0)
 
     cut_dp_eq1: if DP = 1 generate
     begin
       cut_ready_gen: if CUT_READY = 1 generate
-          -- if cut ready, then only accept when fifo is not full
+          -- if cut ready, then only accept when fifo is not full, on this condition, 
+          -- one clock cycle empty the fifo and set i_rdy, the second cycle store data into fifo, 
+          -- the third cycle downsteam can read the data.
           i_rdy <= not i_vec(DP-1);
       end generate;
       no_cut_ready: if CUT_READY = 0 generate
-          -- If not cut ready, then can accept when fifo is not full or it is popping 
+          -- If not cut ready, then can accept when fifo is not full or it is popping, on this condition,
+          -- with ren valid, one clock cycle can pop and store data at the same time, 
+          -- the second cycle downsteam can read the data.
+          
           i_rdy <= (not i_vec(DP-1)) or ren;
       end generate;
     end generate;
@@ -697,29 +737,99 @@ begin
     fifo_rf: for i in 0 to (DP-1) generate
       fifo_rf_en(i) <= wen and wptr_vec_r(i);
       fifo_rf_dffl: component sirv_gnrl_dffl generic map(DW)
-                                                     port map(fifo_rf_en(i), i_dat, fifo_rf_r(i), clk);
+                                                     port map(lden => fifo_rf_en(i), 
+                                                              dnxt => i_dat, 
+                                                              std_ulogic_vector(qout) => fifo_rf_r(i), 
+                                                              clk  => clk);
     end generate;
     
     --  One-Hot Mux as the read path
     rd_port_PROC: process(all) is
       variable tmp: std_ulogic_vector(DW-1 downto 0):= (others=> '0');
     begin
+      tmp := (others => '0');
       for j in 0 to (DP-1) loop
         tmp := tmp or ( (DW-1 downto 0=> rptr_vec_r(j)) and fifo_rf_r(j) );
       end loop ;
-      mux_rdat<= tmp;
+      mux_rdat <= tmp;
     end process; -- rd_port_PROC
   
     mask_output: if (MSKO = 1) generate 
       -- Mask the data with valid since the FIFO register is not reset and as X 
-      o_dat <= (DW-1 downto 0 => o_vld) and mux_rdat;
+      o_dat <= (DW-1 downto 0 => o_vld) and to_slv(mux_rdat);
     end generate;
     no_mask_output: if (MSKO = 0) generate 
       -- Not Mask the data with valid since no care with X for datapath
-      o_dat <= mux_rdat;
+      o_dat <= to_slv(mux_rdat);
     end generate;
 
     -- o_vld as flop-clean
     o_vld <= o_vec(0);
   end generate;
+end impl;
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+entity sirv_gnrl_fifo_DP is
+      generic(
+--    -- When the depth is 1, the ready signal may relevant to next stage's ready, hence become logic
+--    -- chains. Use CUT_READY to control it
+--    -- When fifo depth is 1, the fifo is a signle stage
+--    -- if CUT_READY is set, then the back-pressure ready signal will be cut off, 
+--    -- and it can only pass 1 data every 2 cycles
+--    -- When fifo depth is > 1, then it is actually a really fifo
+--    -- The CUT_READY parameter have no impact to any logics
+
+--            CUT_READY: integer:= 0;
+--            MSKO:      integer:= 0; -- Mask out the data with valid or not
+--            DP:        integer:= 8; -- FIFO depth
+              DW:        integer:= 8 -- FIFO width
+      );
+    port( 
+          i_vld:  in std_logic;                          ----------
+          i_rdy: out std_logic;                          -- upsteam    i_vld --> o_vld --> downward
+          i_dat:  in std_logic_vector( DW-1 downto 0 );  ----------
+          
+          o_vld: out std_logic;                          ------------
+          o_rdy:  in std_logic;                          -- downsteam  o_rdy --> i_rdy --> upward
+          o_dat: out std_logic_vector( DW-1 downto 0 );  ------------
+
+          clk:   in std_logic;
+          rst_n: in std_logic
+    );
+end sirv_gnrl_fifo_DP;
+
+architecture impl of sirv_gnrl_fifo_DP is 
+
+begin
+--fifo_0DP: entity work.sirv_gnrl_fifo(impl) generic map(0, 0, 0, DW)
+--                                              port map(i_vld,
+--                                                       i_rdy,
+--                                                       i_dat, 
+--                                                       o_vld,
+--                                                       o_rdy,
+--                                                       o_dat,
+--                                                       clk,
+--                                                       rst_n);
+                                                       
+--fifo_1DP: entity work.sirv_gnrl_fifo(impl) generic map(0, 0, 1, DW)
+--                                              port map(i_vld,
+--                                                       i_rdy,
+--                                                       i_dat, 
+--                                                       o_vld,
+--                                                       o_rdy,
+--                                                       o_dat,
+--                                                       clk,
+--                                                       rst_n);
+                                                       
+fifo_2DP: entity work.sirv_gnrl_fifo(impl) generic map(0, 1, 2, DW)
+                                              port map(i_vld,
+                                                       i_rdy,
+                                                       i_dat, 
+                                                       o_vld,
+                                                       o_rdy,
+                                                       o_dat,
+                                                       clk,
+                                                       rst_n);                                                       
 end impl;

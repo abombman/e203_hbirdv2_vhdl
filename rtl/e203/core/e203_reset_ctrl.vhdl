@@ -68,7 +68,7 @@ begin
       if rst_n = '0' then
         rst_sync_r(RST_SYNC_LEVEL-1 downto 0) <= (RST_SYNC_LEVEL-1 downto 0 => '0');
       elsif rising_edge(clk) then
-        rst_sync_r(RST_SYNC_LEVEL-1 downto 0) <= (RST_SYNC_LEVEL-2 downto 0 => '0') & '1';
+        rst_sync_r(RST_SYNC_LEVEL-1 downto 0) <= rst_sync_r(RST_SYNC_LEVEL-2 downto 0) & '1';
       end if;
     end process;
 

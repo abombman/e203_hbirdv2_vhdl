@@ -217,7 +217,7 @@ architecture impl of e203_itcm_ctrl is
     );
   end component;
 begin
-  u_itcm_icb_lsu2itcm_n2wz: entity work.sirv_gnrl_icb_n2w generic map(
+  u_itcm_icb_lsu2itcm_n2w: entity work.sirv_gnrl_icb_n2w generic map(
    FIFO_OUTS_NUM  => E203_ITCM_OUTS_NUM,
    FIFO_CUT_READY => 0,
    USR_W          => 1,

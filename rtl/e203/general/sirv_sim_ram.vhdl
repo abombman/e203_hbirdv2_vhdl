@@ -68,16 +68,16 @@ begin
 
   mem: for i in 0 to (MW-1) generate
   begin
-    last: if ((8*i+8) > DW) generate  -- why? could be happen? 
-      process(clk)
-      begin
-        if rising_edge(clk) then
-          if wen(i) = '1' then
-            mem_r(to_integer(u_unsigned(addr)))((DW-1) downto (8*i))<= din((8*i+7) downto (8*i));
-          end if;
-        end if;
-      end process;
-    end generate;
+  --  last: if ((8*i+8) > DW) generate  -- why? could be happen? 
+  --    process(clk)
+  --    begin
+  --      if rising_edge(clk) then
+  --        if wen(i) = '1' then
+  --          mem_r(to_integer(u_unsigned(addr)))((DW-1) downto (8*i))<= din((8*i+7) downto (8*i));
+  --        end if;
+  --      end if;
+  --    end process;
+  --  end generate;
     non_last: if ((8*i+8) <= DW) generate
       process(clk)
       begin
@@ -90,7 +90,7 @@ begin
     end generate;
   end generate;
 
-  dout_pre <= mem_r(to_integer(u_unsigned(addr_r)));
+  dout_pre <= mem_r(to_integer(addr_r));
 
   force_x_to_zero: if (FORCE_X2ZERO = 1) generate
     force_x_gen: for i in 0 to DW-1 generate
